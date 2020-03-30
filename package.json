@@ -1,0 +1,22 @@
+{
+  "name": "Ava",
+  "version": "1.0.0",
+  "description": "Ava Discord Bot",
+  "main": "app.js",
+  "scripts": {
+    "start": "sudo nodemon app.js"
+  },
+  "keywords": [],
+  "author": "Daydream",
+  "license": "ISC",
+  "dependencies": {
+    "ascii-table": "0.0.9",
+    "cli-table": "^0.3.1",
+    "discord.js": "^12.0.2",
+    "eris": "^0.11.2",
+    "eris-additions": "^1.3.0",
+    "mysql": "^2.18.1",
+    "oxford-dictionary": "^1.6.0",
+    "random-puppy": "^1.1.0"
+  }
+}
