@@ -44,12 +44,12 @@ client.once('ready', () => {
 	console.log('Ready!')
 	client.user.setPresence({
 		activity: {
-			name: 'with my cat',
-			type: 'STREAMING',
-			url: "https://www.youtube.com/watch?v=iHEuM1e8V40"
-		},
-		status: 'online',
-	})
+      name: 'with Skrill and Rick',
+      type: 'STREAMING',
+      url: "https://youtube.com/watch?v=ZkqyIoYAXV8?t=169"
+  	},
+    status: 'online',
+  })
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
