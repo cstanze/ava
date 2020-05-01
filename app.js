@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const psNode = require('ps-node');
 const randomPuppy = require('random-puppy')
 const config = require('./config')
 const vaporString = require('./vapor')
@@ -38,7 +39,8 @@ client.once('ready', () => {
       console.log('error when connecting to db:', err);
     }
   });
-	fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
+	// Production Only
+	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
 	console.log('Ready!')
 	client.user.setPresence({
 		activity: {
@@ -60,22 +62,24 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 	setTimeout((reaction, user) => {
-		console.log(reaction.emoji.name)
-		if(reaction.emoji.name == '\u{2B50}' || reaction.emoji.name == "\u{2b}") {
-			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
-			if(!starboard) {
-				return;
+		let reactionArray = reaction.message.reactions.cache.array()
+		if(!reactionArray.contains(reaction)) {
+			if(reaction.emoji.name == '\u{2B50}' || reaction.emoji.name == "\u{2b}") {
+				let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
+				if(!starboard) {
+					return;
+				}
+				let reactionClient = user
+				let starredEmbed = new Discord.MessageEmbed()
+				.setColor('#14c49e')
+				.setDescription(reaction.message.content)
+				.addField('Original', `[Jump!](${reaction.message.url})`)
+				.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+				.setTimestamp()
+				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+				starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+				starboard.send(starredEmbed)
 			}
-			let reactionClient = user
-			let starredEmbed = new Discord.MessageEmbed()
-			.setColor('#14c49e')
-			.setDescription(reaction.message.content)
-			.addField('Original', `[Jump!](${reaction.message.url})`)
-			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
-			starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-			starboard.send(starredEmbed)
 		}
 	}, 3000, reaction, user)
 })
@@ -377,8 +381,23 @@ client.on('message', async msg => {
 				msg.channel.send(`\`\`\`\n${table.toString()}\`\`\``)
 			})
 		}
-	} else if(command == "pm2List") {
-		msg.channel.send(`\`\`\`\n${require('child_process').execSync('pm2 list').toString()}\`\`\``)
+} else if(command == "nodeList") {
+		// let psOut = require('child_process').execSync('ps').toString()
+		// msg.channel.send(`\`\`\`\n${psOut}\`\`\``)
+		psNode.lookup({ command: 'node', arguments:'--debug' }, (err, list) => {
+			if(err) {
+				throw new Error(err)
+			}
+			let table = new AsciiTable('Current NodeJS Processes')
+			table.setHeading('PID', 'COMMAND', 'ARGS')
+			for(let i=0;i<list.length;i++) {
+				let p = list[i]
+				if(p) {
+					table.addRow(process.pid, process.command, process.arguments)
+				}
+			}
+			msg.channel.send(`\`\`\`\n${table.toString()}\`\`\``)
+		})
 	} else if(command == "eval") {
 		let id = msg.member.user.id
 		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {
