@@ -13,6 +13,8 @@ let banTimeout = null
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
 const { argumentDictionaryFromMessage } = require('./helpers/arguments.js')
 const { fetchMemberWithId } = require('./helpers/fetchMember.js')
+const { asyncForEach } = require('./helpers/asyncForEach.js');
+const { getDefaultChannel } = require('./helpers/defaultChannel.js')
 const { handlePrefixAlter, handlePrefixFinish } = require('./handlers/prefix.js')
 const mysql = require('mysql')
 let dispatcher = null
@@ -62,14 +64,13 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 	setTimeout((reaction, user) => {
-		let reactionArray = reaction.message.reactions.cache.array()
-		if(!reactionArray.contains(reaction)) {
+		if(!(reaction.count > 1)) {
 			if(reaction.emoji.name == '\u{2B50}' || reaction.emoji.name == "\u{2b}") {
 				let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
 				if(!starboard) {
 					return;
 				}
-				let reactionClient = user
+				let reactionClient = reaction.message.member.user
 				let starredEmbed = new Discord.MessageEmbed()
 				.setColor('#14c49e')
 				.setDescription(reaction.message.content)
@@ -81,7 +82,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				starboard.send(starredEmbed)
 			}
 		}
-	}, 3000, reaction, user)
+	}, 6000, reaction, user)
 })
 
 client.on('message', async msg => {
@@ -89,6 +90,11 @@ client.on('message', async msg => {
 	let command = noPrefix.split(" ")[0]
 	if(isInPrefixAlterMode && sequenceStarter != null && sequenceStarter == msg.member && prefixAlterModeId != null) {
 		handlePrefixAlter(msg, alterModeId)
+	}
+	for(let d=0;d<config.prefix.length;d++) {
+		if(msg.content[d] != config.prefix[d]) {
+			return;
+		}
 	}
 	if(command == "kick") {
 		if(msg.member.hasPermission("KICK_MEMBERS")) {
@@ -161,6 +167,7 @@ client.on('message', async msg => {
 			msg.channel.send(`${randomGivers[Math.floor(Math.random() * randomGivers.length)]} ${url}`)
 		})
 	} else if(command == "crab") {
+		let finalCrabs = ""
 		let args = argumentDictionaryFromMessage("crab", msg.content, ["crabCount"])
 		if(args.crabCount == null) args = NaN
 		if(args.crabCount != null) args = Number(args.crabCount)
@@ -176,6 +183,74 @@ client.on('message', async msg => {
 			finalCrabs += ":crab:"
 		}
 		msg.channel.send(finalCrabs)
+	} else if(command == "bird") {
+		let finalBirds = ""
+		let args = argumentDictionaryFromMessage("bird", msg.content, ["birdCount"])
+		if(args.birdCount == null) args = NaN
+		if(args.birdCount != null) args = Number(args.birdCount)
+		if(isNaN(args)) {
+			msg.channel.send(":bird:")
+			return;
+		}
+		if(args > 120) {
+			msg.channel.send("Sorry! The Limit is 120 birds. (Just out of channel courtesy)")
+			return;
+		}
+		for(let i=0;i<args;i++) {
+			finalBirds += ":bird:"
+		}
+		msg.channel.send(finalBirds)
+	} else if(command == "snail") {
+		let finalSnail = ""
+		let args = argumentDictionaryFromMessage("snail", msg.content, ["snailCount"])
+		if(args.snailCount == null) args = NaN
+		if(args.snailCount != null) args = Number(args.snailCount)
+		if(isNaN(args)) {
+			msg.channel.send(":snail:")
+			return;
+		}
+		if(args > 120) {
+			msg.channel.send("Sorry! The Limit is 120 snails. (Just out of channel courtesy)")
+			return;
+		}
+		for(let i=0;i<args;i++) {
+			finalSnail += ":snail:"
+		}
+		msg.channel.send(finalSnail)
+	} else if(command == "rero") {
+		let finalR = ""
+		let args = argumentDictionaryFromMessage("rero", msg.content, ["r"])
+		if(args.r == null) args = NaN
+		if(args.r != null) args = Number(args.r)
+		if(isNaN(args)) {
+			msg.channel.send("rero")
+			return;
+		}
+		if(args > 120) {
+			msg.channel.send("Sorry! The Limit is 120 rero. (Just out of channel courtesy)")
+			return;
+		}
+		for(let i=0;i<args;i++) {
+			finalR += "rero "
+		}
+		msg.channel.send(finalR)
+	} else if(command == "microbe") {
+		let finalM = ""
+		let args = argumentDictionaryFromMessage("microbe", msg.content, ["m"])
+		if(args.m == null) args = NaN
+		if(args.m != null) args = Number(args.m)
+		if(isNaN(args)) {
+			msg.channel.send(":microbe:")
+			return;
+		}
+		if(args > 120) {
+			msg.channel.send("Sorry! The Limit is 120 microbes. (Just out of channel courtesy)")
+			return;
+		}
+		for(let i=0;i<args;i++) {
+			finalM += ":microbe:"
+		}
+		msg.channel.send(finalM)
 	} else if(command == "vapor") {
 		// a!vapor hello bros
 		let args = argumentDictionaryFromMessage("vapor", msg.content, ["vaporString"])
@@ -431,6 +506,96 @@ client.on('message', async msg => {
 		// prefixAlterModeId = msg.guild.id
 		// isInPrefixAlterMode = true
 		// msg.channel.send("Alter Mode Active: Set a bot prefix")
+	} else if(command == "nitro") {
+		let args = argumentDictionaryFromMessage("nitro", msg.content, ["emojiName", "emojiCount"])
+		console.log(args)
+		if(args.emojiCount == null) args.eomjiCount = NaN
+		if(args.emojiCount != null) args.emojiCount = Number(args.emojiCount)
+		let ownerGuild = client.guilds.cache.array()
+		ownerGuild = ownerGuild.filter(g => g.id == "554758758090145801")
+		ownerGuild = ownerGuild[0]
+		let ownerEmoji = ownerGuild.emojis.cache.array()
+		ownerEmoji = ownerEmoji.filter(e => e.name == args.emojiName)
+		console.log(args)
+		if(ownerEmoji[0] == null) {
+			msg.channel.send("Emoji does not exist in owner database")
+			return
+		}
+		if(args.emojiCount > 120) {
+			msg.channel.send("Sorry! The Limit is 120 emoji. (Just out of channel courtesy)")
+			return
+		}
+		if(isNaN(args.emojiCount)) {
+			msg.channel.send(ownerEmoji)
+			return
+		}
+		let finalEmoji = ""
+		for(let i=0;i<args.emojiCount;i++) {
+			finalEmoji += `<:${ownerEmoji[0].name}:${ownerEmoji[0].id}>`
+		}
+		if(finalEmoji.length > 2000) {
+			msg.channel.send("Discord Character Limits Do Not Allow Over 2000 Characters. Sorry about this.")
+			return
+		}
+		msg.channel.send(finalEmoji)
+	} else if(command == "listnitro") {
+		let ownerGuild = client.guilds.cache.array()
+		ownerGuild = ownerGuild.filter(g => g.id == "554758758090145801")
+		ownerGuild = ownerGuild[0]
+		let ownerEmoji = ownerGuild.emojis.cache.array()
+		console.log(ownerEmoji.length)
+		let table = new AsciiTable('Emoji List')
+		table.setHeading('NAME')
+		for(let e of ownerEmoji){
+			table.addRow(e.name)
+		}
+		msg.channel.send(`\`\`\`\n${table.toString()}\`\`\``)
+	} else if(command == "uwuify") {
+		let args = argumentDictionaryFromMessage("uwuify", msg.content, ["uwutext"])
+		if(args.uwutext == null) args.uwutext = "You need to have something to say. >w<"
+		let uwu = args.uwutext
+		uwu = uwu.replace(/(?:l|r)/g, 'w')
+		uwu = uwu.replace(/(?:L|R)/g, 'w')
+		uwu = uwu.replace("no", "nyo")
+		uwu = uwu.replace("mo", "myo")
+		uwu = uwu.replace("s", "sh")
+		uwu = uwu.replace(/!+/g, ` >w< `)
+		let f = Math.random() > 0.25
+		if(f) {
+			let c = uwu.charAt(0)
+			uwu = c + '-' + uwu
+		}
+		msg.channel.send(uwu.toLowerCase() + " uwu!")
+	} else if(command == "announce") {
+		let id = msg.member.user.id
+		let args = argumentDictionaryFromMessage("announce", msg.content, ["announcement"])
+		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {
+			let hasResults = false
+			try {
+				if(res[0].id != null) hasResults = true
+			} catch {
+				hasResults = false
+			}
+			if(hasResults) {
+				for(let i=0;i<res.length;i++) {
+					if(res[i].userId == id) {
+						let guildArr = client.guilds.cache.array()
+						for(let guild of guildArr) {
+							let defChan = getDefaultChannel(guild)
+							defChan.send(args.announcement)
+						}
+						return
+					}
+				}
+				msg.channel.send("You think you're sneaky huh? :laughing:\n You've got to be a bot owner to run this command")
+			} else {
+				msg.channel.send("Hmm... I couldn't find any admin entries in the database.")
+			}
+		})
+	} else if(command == "simpsons") {
+		msg.channel.send("https://i.redd.it/o78c472xnzw41.jpg")
+	} else if(command == "version") {
+		msg.channel.send("Ava Bot Version: v1.4.2 Semi-Stable")
 	}
 });
 

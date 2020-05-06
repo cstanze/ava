@@ -17,6 +17,7 @@
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-static": "^4.2.0",
     "libsodium-wrappers": "^0.7.6",
+    "long": "^4.0.0",
     "mysql": "*",
     "node-fetch": "^2.6.0",
     "opusscript": "0.0.7",
