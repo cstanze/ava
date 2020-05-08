@@ -4,7 +4,9 @@
   "description": "Ava Discord Bot",
   "main": "app.js",
   "scripts": {
-    "start": "sudo nodemon app.js"
+    "start": "sudo nodemon app.js",
+    "server": "pm2 start app.js --name Ava",
+    "bProd": "pm2 start app.js --name Ava --watch"
   },
   "keywords": [],
   "author": "Daydream",
