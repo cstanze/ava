@@ -25,7 +25,7 @@ let isInPrefixAlterMode = false
 let prefixAlterModeId = null
 let connection = null
 let channelName = "Semi-Stable"
-let versionString = `v1.5.0`
+let versionString = `v1.9.9`
 const connectionDetails = {
 	host: "localhost",
 	user: "pi",
@@ -102,9 +102,43 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				}
 				starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
 				starboard.send(starredEmbed)
+			} else if(reaction.emoji.name == "sin") {
+				let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == "hall-of-sin")
+				if(!sinboard) {
+					return;
+				}
+				let msg = reaction.message
+				let hasAttachment = false
+				if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
+				let isSpoiler = false
+				let attachment = hasAttachment ? msg.attachments.first() : null
+				if(hasAttachment) isSpoiler = attachment.spoiler
+				if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
+				let reactionClient = reaction.message.member.user
+				let sinnedEmbed = new Discord.MessageEmbed()
+				.setColor('#14c49e')
+				.setDescription(reaction.message.content)
+				.addField('Original', `[Jump!](${reaction.message.url})`)
+				.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+				.setTimestamp()
+				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+				if(hasAttachment) {
+					if(attachmentIsImage(attachment)) {
+						if(isSpoiler) {
+							sinnedEmbed.attachFiles(['./images/spoiler.png'])
+							.setImage('attachment://spoiler.png')
+						} else {
+							sinnedEmbed.setImage(attachment.url)
+						}
+					} else {
+						sinnedEmbed.addField('Extra', 'This messages appears to have an attachment other than an image or gif. It might be a video.')
+					}
+				}
+				sinboard.send(`<:${reaction.emoji.name}:${reaction.emoji.id}> **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+				sinboard.send(sinnedEmbed)
 			}
 		}
-	}, 6000, reaction, user)
+	}, 7000, reaction, user)
 })
 
 client.on('message', async msg => {
@@ -529,9 +563,13 @@ client.on('message', async msg => {
 		// isInPrefixAlterMode = true
 		// msg.channel.send("Alter Mode Active: Set a bot prefix")
 	} else if(command == "nitro") {
-		let args = argumentDictionaryFromMessage("nitro", msg.content, ["emojiName", "emojiCount"])
-		if(args.emojiCount == null) args.eomjiCount = NaN
+		let args = argumentDictionaryFromMessage("nitro", msg.content, ["emojiName", "emojiCount", "source"])
+		if(args.emojiCount == null) args.emojiCount = NaN
 		if(args.emojiCount != null) args.emojiCount = Number(args.emojiCount)
+		if(args.source == null) args.source = "main"
+		if(args.source != null) args.source = args.source.toLowerCase()
+		if(args.source != null) hasSource = true
+		if(hasSource && (args.source != "alt" || args.source != "main")) args.source = "main"
 		let ownerGuild = client.guilds.cache.array()
 		ownerGuild = ownerGuild.filter(g => g.id == "554758758090145801")
 		ownerGuild = ownerGuild[0]
@@ -551,37 +589,7 @@ client.on('message', async msg => {
 		}
 		let finalEmoji = ""
 		for(let i=0;i<args.emojiCount;i++) {
-			finalEmoji += `<:${ownerEmoji[0].name}:${ownerEmoji[0].id}>`
-		}
-		if(finalEmoji.length > 2000) {
-			msg.channel.send("Discord Character Limits Do Not Allow Over 2000 Characters. Sorry about this.")
-			return
-		}
-		msg.channel.send(finalEmoji)
-	} else if(command == "nitro") {
-		let args = argumentDictionaryFromMessage("nitro", msg.content, ["emojiName", "messageId"])
-		if(args.emojiCount == null) args.eomjiCount = NaN
-		tyh
-		let ownerGuild = client.guilds.cache.array()
-		ownerGuild = ownerGuild.filter(g => g.id == "554758758090145801")
-		ownerGuild = ownerGuild[0]
-		let ownerEmoji = ownerGuild.emojis.cache.array()
-		ownerEmoji = ownerEmoji.filter(e => e.name == args.emojiName)
-		if(ownerEmoji[0] == null) {
-			msg.channel.send("Emoji does not exist in owner database")
-			return
-		}
-		if(args.emojiCount > 120) {
-			msg.channel.send("Sorry! The Limit is 120 emoji. (Just out of channel courtesy)")
-			return
-		}
-		if(isNaN(args.emojiCount)) {
-			msg.channel.send(ownerEmoji)
-			return
-		}
-		let finalEmoji = ""
-		for(let i=0;i<args.emojiCount;i++) {
-			finalEmoji += `<:${ownerEmoji[0].name}:${ownerEmoji[0].id}>`
+			finalEmoji += ownerEmoji[0].animated ? `<a:${ownerEmoji[0].name}:${ownerEmoji[0].id}>` : `<:${ownerEmoji[0].name}:${ownerEmoji[0].id}>`
 		}
 		if(finalEmoji.length > 2000) {
 			msg.channel.send("Discord Character Limits Do Not Allow Over 2000 Characters. Sorry about this.")
@@ -660,31 +668,30 @@ client.on('message', async msg => {
 				{ name: `v1.4.0 ${channelName}`, value: 'Added uwuify Command. Added informal changelog' },
 				{ name: `v1.4.3 ${channelName}`, value: 'Changed how the starboard functioned' },
 				{ name: `v1.4.6 ${channelName}`, value: 'Added advanced image/gif support for starboard' },
-				{ name: `v1.5.0 ${channelName}`, value: 'Upgraded to embed changelog.' }
+				{ name: `v1.5.0 ${channelName}`, value: 'Upgraded to embed changelog.' },
+				{ name: `v1.6.0 ${channelName}`, value: 'Bug fixes. Like alot!' },
+				{ name: `v1.7.0 ${channelName}`, value: 'In a new server!' },
+				{ name: `v1.7.9 ${channelName}`, value: 'Even more bug fixes.' },
+				{ name: `v1.8.0 ${channelName}`, value: 'Added the \"hall-of-sin\" for a custom server!' },
+				{ name: `v1.9.0 ${channelName}`, value: 'Fixed the starboard image/gif support.' }
 			)
 			.setThumbnail('attachment://AvaIcon.png')
 			.setTimestamp()
 			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
 		msg.channel.send(changelog)
-	} else if(command == "info") {
+	} else if(command == "serverinfo") {
 		let info = new Discord.MessageEmbed()
 			.setColor('#0099ff')
 			.setTitle('Server Info')
 			.setAuthor(`NodeJS ${require('child_process').execSync('node -v').toString()}`, 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
-			.setDescription(`Some interesting info for the server that runs Ava!`)
+			.setDescription(`Current [NodeJS](https://nodejs.org): ${require('child_process').execSync('node -v').toString()}`)
 			.addFields(
-				{ name: 'Server CPU', value: `${require('child_process').execSync('sysctl -n machdep.cpu.brand_string').toString()}` },
-				{ name: 'NodeJS Version', value: `${require('child_process').execSync('node -v').toString()}` }
+				{ name: 'Server CPU', value: `${require('child_process').execSync('sysctl -n machdep.cpu.brand_string').toString()}` }
 			)
 			.setThumbnail('https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], 'https://nodejs.org')
-			msg.channel.send(info)
-	} else if(command == "smug") {
-		let smug = new Discord.MessageEmbed()
-			.attachFiles(['./images/hanekawa_smug.jpg'])
-			.setImage('attachment://hanekawa_smug.jpg')
-		msg.channel.send(smug)
+			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
+		msg.channel.send(info)
 	}
 });
 
