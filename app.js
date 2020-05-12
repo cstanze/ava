@@ -17,6 +17,7 @@ const { asyncForEach } = require('./helpers/asyncForEach.js');
 const { getDefaultChannel } = require('./helpers/defaultChannel.js')
 const { attachmentIsImage } = require('./helpers/attachments.js')
 const { handlePrefixAlter, handlePrefixFinish } = require('./handlers/prefix.js')
+const gis = require('g-i-s')
 const mysql = require('mysql')
 let dispatcher = null
 let isPlaying = false
@@ -124,7 +125,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
 				if(hasAttachment) {
 					if(attachmentIsImage(attachment)) {
-						if(isSpoiler) {
+						if(sinboard.nsfw) {
 							sinnedEmbed.attachFiles(['./images/spoiler.png'])
 							.setImage('attachment://spoiler.png')
 						} else {
@@ -430,12 +431,12 @@ client.on('message', async msg => {
 			if(hasResults) {
 				for(let i=0;i<res.length;i++) {
 					if(res[i].userId == id) {
-						msg.channel.send("Restarting Now!")
-						process.exit()
-					} else {
-						msg.channel.send("You think you're sneaky huh? :laughing:\n You've got to be a bot owner to run this command")
+						msg.channel.send("Restarting the main server now!")
+						require('child_process').execSync('pm2 restart --update-env')
+						return
 					}
 				}
+				msg.channel.send("You think you're sneaky huh? :laughing:\n You've got to be a bot owner to run this command")
 			} else {
 				msg.channel.send("Hmm... I couldn't find any admin entries in the database.")
 			}
@@ -692,6 +693,42 @@ client.on('message', async msg => {
 			.setTimestamp()
 			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
 		msg.channel.send(info)
+	} else if(command == "googleimages") {
+		msg.channel.startTyping()
+		setTimeout(() => {
+			msg.channel.send("This is command is in private beta right now.")
+		}, 500, msg)
+		setTimeout(() => {
+			msg.channel.send("To access the private beta channel on Ava, please type: `a!channel private`")
+		}, 750, msg)
+		
+		setTimeout(() => {
+			msg.channel.send("Note: You must be a bot owner.")
+		}, 1000, msg)
+		setTimeout(() => {
+			msg.channel.send("This is command is in private beta right now.")
+		}, 1250, msg)
+	} else if(command == "checkowner") {
+		let id = msg.member.user.id
+		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {
+			let hasResults = false
+			try {
+				if(res[0].id != null) hasResults = true
+			} catch {
+				hasResults = false
+			}
+			if(hasResults) {
+				for(let i=0;i<res.length;i++) {
+					if(res[i].userId == id) {
+						msg.channel.send("Yup! You're a bot owner!")
+						return
+					}
+				}
+				msg.channel.send("Dagnabit. It looks like you\'re not a bot owner")
+			} else {
+				msg.channel.send("Hmm... I couldn't find any admin entries in the database.")
+			}
+		})
 	}
 });
 
