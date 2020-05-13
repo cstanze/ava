@@ -17,7 +17,6 @@ const { asyncForEach } = require('./helpers/asyncForEach.js');
 const { getDefaultChannel } = require('./helpers/defaultChannel.js')
 const { attachmentIsImage } = require('./helpers/attachments.js')
 const { handlePrefixAlter, handlePrefixFinish } = require('./handlers/prefix.js')
-const gis = require('g-i-s')
 const mysql = require('mysql')
 let dispatcher = null
 let isPlaying = false
@@ -27,6 +26,7 @@ let prefixAlterModeId = null
 let connection = null
 let channelName = "Semi-Stable"
 let versionString = `v1.9.9`
+const fs = require('fs')
 const connectionDetails = {
 	host: "localhost",
 	user: "pi",
@@ -432,7 +432,7 @@ client.on('message', async msg => {
 				for(let i=0;i<res.length;i++) {
 					if(res[i].userId == id) {
 						msg.channel.send("Restarting the main server now!")
-						require('child_process').execSync('pm2 restart --update-env')
+						require('child_process').execSync('pm2 restart Ava --update-env')
 						return
 					}
 				}
@@ -701,7 +701,7 @@ client.on('message', async msg => {
 		setTimeout(() => {
 			msg.channel.send("To access the private beta channel on Ava, please type: `a!channel private`")
 		}, 750, msg)
-		
+
 		setTimeout(() => {
 			msg.channel.send("Note: You must be a bot owner.")
 		}, 1000, msg)
@@ -728,6 +728,14 @@ client.on('message', async msg => {
 			} else {
 				msg.channel.send("Hmm... I couldn't find any admin entries in the database.")
 			}
+		})
+	} else if(command == "ping") {
+		msg.channel.send("pong!")
+	} else if(command == "guilds") {
+		msg.channel.send(`Working on ${client.guilds.cache.size} guilds!`)
+	} else if(command == "link") {
+		client.generateInvite(["ADMINISTRATOR"]).then(l => {
+			msg.channel.send(`Invite Link For Ava:\n${l}`)
 		})
 	}
 });
