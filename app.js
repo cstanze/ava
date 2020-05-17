@@ -11,12 +11,15 @@ let isInBanConfirmation = false
 let banConfirmMember = null
 let banTimeout = null
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
-const { argumentDictionaryFromMessage } = require('./helpers/arguments.js')
 const { fetchMemberWithId } = require('./helpers/fetchMember.js')
 const { asyncForEach } = require('./helpers/asyncForEach.js');
 const { getDefaultChannel } = require('./helpers/defaultChannel.js')
 const { attachmentIsImage } = require('./helpers/attachments.js')
+const { roleInGuildWithName, roleInGuildWithId } = require('./helpers/roles.js')
+const { didYouMean } = require('./helpers/didyoumean.js')
+const { argumentDictionaryFromMessage } = require('./handlers/arguments.js')
 const { handlePrefixAlter, handlePrefixFinish } = require('./handlers/prefix.js')
+const { handleCommandDocuments } = require('./handlers/commands.js')
 const mysql = require('mysql')
 let dispatcher = null
 let isPlaying = false
@@ -39,20 +42,20 @@ const AsciiTable = require('ascii-table')
 const ytdl = require('ytdl-core');
 const fetch = require('node-fetch');
 
+con.connect(function(err) {
+	if(err) {
+		console.log('error when connecting to db:', err);
+	}
+});
+
 client.once('ready', () => {
-	con.connect(function(err) {
-    if(err) {
-      console.log('error when connecting to db:', err);
-    }
-  });
 	// Production Only
 	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
-	console.log('Ready!')
+	console.log('[Ava][Ready] Ready!')
 	client.user.setPresence({
 		activity: {
-      name: 'with Skrill and Rick',
-      type: 'STREAMING',
-      url: "https://youtube.com/watch?v=ZkqyIoYAXV8?t=169"
+      name: 'a!help for help.',
+      type: 'PLAYING',
   	},
     status: 'online',
   })
@@ -132,7 +135,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 							sinnedEmbed.setImage(attachment.url)
 						}
 					} else {
-						sinnedEmbed.addField('Extra', 'This messages appears to have an attachment other than an image or gif. It might be a video.')
+						sinnedEmbed.addField('Extra', 'This messages appears to have an attachment other than an image or gif. It might be a video.', false)
 					}
 				}
 				sinboard.send(`<:${reaction.emoji.name}:${reaction.emoji.id}> **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
@@ -143,16 +146,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.on('message', async msg => {
-	let noPrefix = msg.content.replace(config.prefix, "")
-	let command = noPrefix.split(" ")[0]
-	if(isInPrefixAlterMode && sequenceStarter != null && sequenceStarter == msg.member && prefixAlterModeId != null) {
-		handlePrefixAlter(msg, alterModeId)
-	}
-	for(let d=0;d<config.prefix.length;d++) {
-		if(msg.content[d] != config.prefix[d]) {
-			return;
-		}
-	}
+	if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+	let command = msg.content.replace(config.prefix, "").split(" ")[0]
 	if(command == "kick") {
 		if(msg.member.hasPermission("KICK_MEMBERS")) {
 			const user = msg.mentions.users.first();
@@ -177,7 +172,7 @@ client.on('message', async msg => {
 		} else {
 			msg.channel.send("You don't have kick permissions, silly");
 		}
-	} else if(command == "roleAdd") {
+	} else if(command == "addrole") {
 		if(msg.member.hasPermission("MANAGE_ROLES")) {
 			let role = msg.mentions.roles.array()[0]
 			let member = msg.mentions.members.array()[0]
@@ -194,7 +189,7 @@ client.on('message', async msg => {
 		} else {
 			msg.channel.send("You don't have role permissions, silly");
 		}
-	} else if(command == "roleRemove") {
+	} else if(command == "removerole") {
 		if(msg.member.hasPermission("MANAGE_ROLES")) {
 			let role = msg.mentions.roles.first()
 			let member = msg.mentions.members.first()
@@ -347,7 +342,7 @@ client.on('message', async msg => {
 			isInBanConfirmation = true
 			banConfirmMember = member
 			sequenceStarter = msg.member
-			msg.channel.send("Type a!confirm to confirm the ban.")
+			msg.channel.send("Type a!confirm to confirm the ban and a!cancelban to cancel it.")
 			msg.channel.send("*Ban will be auto-cancelled in 5 minutes*")
 			banTimeout = setTimeout(msg => {
 				isInBanConfirmation = false
@@ -358,7 +353,7 @@ client.on('message', async msg => {
 		} else {
 			msg.channel.send("*Insufficient Permissions*")
 		}
-	} else if(command == "cancelBan") {
+	} else if(command == "cancelban") {
 		isInBanConfirmation = false
 		banConfirmMember = null
 		sequenceStarter = null
@@ -414,7 +409,7 @@ client.on('message', async msg => {
 		} else {
 			msg.channel.send('You need to join a voice channel first!');
 		}
-	} else if(command == "stopLofi") {
+	} else if(command == "stoplofi") {
 		if(msg.member == sequenceStarter && isPlaying) {
 			connection.dispatcher.pause()
 			connection.disconnect()
@@ -432,7 +427,7 @@ client.on('message', async msg => {
 				for(let i=0;i<res.length;i++) {
 					if(res[i].userId == id) {
 						msg.channel.send("Restarting the main server now!")
-						require('child_process').execSync('pm2 restart Ava --update-env')
+						require('child_process').execSync('pm2 restart AvaSharder --update-env')
 						return
 					}
 				}
@@ -513,7 +508,7 @@ client.on('message', async msg => {
 				msg.channel.send(`\`\`\`\n${table.toString()}\`\`\``)
 			})
 		}
-	} else if(command == "nodeList") {
+	} else if(command == "nodelist") {
 		// let psOut = require('child_process').execSync('ps').toString()
 		// msg.channel.send(`\`\`\`\n${psOut}\`\`\``)
 		psNode.lookup({ command: 'node', arguments:'--debug' }, (err, list) => {
@@ -565,6 +560,9 @@ client.on('message', async msg => {
 		// msg.channel.send("Alter Mode Active: Set a bot prefix")
 	} else if(command == "nitro") {
 		let args = argumentDictionaryFromMessage("nitro", msg.content, ["emojiName", "emojiCount", "source"])
+		if(args.emojiName == null) {
+			msg.channel.send("You need an emoji name.\nCheck out \`a!listnitro\` for a list of emoji")
+		}
 		if(args.emojiCount == null) args.emojiCount = NaN
 		if(args.emojiCount != null) args.emojiCount = Number(args.emojiCount)
 		if(args.source == null) args.source = "main"
@@ -577,7 +575,7 @@ client.on('message', async msg => {
 		let ownerEmoji = ownerGuild.emojis.cache.array()
 		ownerEmoji = ownerEmoji.filter(e => e.name == args.emojiName)
 		if(ownerEmoji[0] == null) {
-			msg.channel.send("Emoji does not exist in owner database")
+			msg.channel.send("Emoji does not exist in owner database\n"+"***Did You mean:*** "+didyouMean(args.emojiName, "emoji"))
 			return
 		}
 		if(args.emojiCount > 120) {
@@ -682,10 +680,10 @@ client.on('message', async msg => {
 		msg.channel.send(changelog)
 	} else if(command == "serverinfo") {
 		let info = new Discord.MessageEmbed()
-			.setColor('#0099ff')
+			.setColor('#00ff00')
 			.setTitle('Server Info')
 			.setAuthor(`NodeJS ${require('child_process').execSync('node -v').toString()}`, 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
-			.setDescription(`Current [NodeJS](https://nodejs.org): ${require('child_process').execSync('node -v').toString()}`)
+			.setDescription(`Current [NodeJS](https://nodejs.org) Version: ${require('child_process').execSync('node -v').toString()}`)
 			.addFields(
 				{ name: 'Server CPU', value: `${require('child_process').execSync('sysctl -n machdep.cpu.brand_string').toString()}` }
 			)
@@ -731,11 +729,138 @@ client.on('message', async msg => {
 		})
 	} else if(command == "ping") {
 		msg.channel.send("pong!")
-	} else if(command == "guilds") {
-		msg.channel.send(`Working on ${client.guilds.cache.size} guilds!`)
-	} else if(command == "link") {
+	} else if(command == "stats") {
+		const promises = [
+			client.shard.fetchClientValues('guilds.cache.size'),
+			client.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)'),
+		];
+
+		Promise.all(promises)
+			.then(results => {
+				const totalGuilds = results[0].reduce((prev, guildCount) => prev + guildCount, 0);
+				const totalMembers = results[1].reduce((prev, memberCount) => prev + memberCount, 0);
+				return msg.channel.send(`Working on ${totalGuilds} total guilds!\n${totalMembers} Current people using Ava!`);
+			})
+			.catch(console.error);
+	} else if(command == "invite") {
 		client.generateInvite(["ADMINISTRATOR"]).then(l => {
 			msg.channel.send(`Invite Link For Ava:\n${l}`)
+		})
+	} else if(command == "shard") {
+		msg.channel.send(`There are \`${client.guilds.cache.size}\` servers on the shard of id: \`${client.shard.ids[0]}\`. There are a total of \`${client.shard.count}\` shard(s)`)
+	} else if(command == "reload") {
+		let id = msg.member.user.id
+		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {
+			let hasResults = false
+			try {
+				if(res[0].id != null) hasResults = true
+			} catch {
+				hasResults = false
+			}
+			if(hasResults) {
+				for(let i=0;i<res.length;i++) {
+					if(res[i].userId == id) {
+						msg.channel.send('Reloading AvaSharder Process...').then(() => {
+							require('child_process').execSync('pm2 reload AvaSharder --update-env')
+						})
+						return
+					}
+				}
+				msg.channel.send("You think you're sneaky huh? :laughing:\n You've got to be a bot owner to run this command")
+			} else {
+				msg.channel.send("Hmm... I couldn't find any admin entries in the database.")
+			}
+		})
+	} else if(command == "help") {
+		let commandEmbed = new Discord.MessageEmbed()
+			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+			.setColor("#8074d2")
+			.setTitle("Ava Command List")
+			.attachFiles(['./AvaIcon.png'])
+			.setAuthor(`Ava ${versionString} ${channelName}`, 'attachment://AvaIcon.png')
+			.setThumbnail('attachment://AvaIcon.png')
+			.setTimestamp()
+			.addFields(
+				{ name: ":tools: Moderation", value: "\`a!commands mod\`", inline: true },
+				{ name: ":camera: Image", value: "\`a!commands image\`", inline: true },
+				{ name: ":smile: Fun", value: "\`a!commands fun\`", inline: true },
+				{ name: ":joy: Emoji", value: "\`a!commands emoji\`", inline: true },
+				{ name: ":ok: Text", value: "\`a!commands text\`", inline: true },
+				{ name: ":lock: Private", value: "\`a!commands private\`", inline: true },
+				{ name: ":green_book: Extra", value: "\`a!commands misc\`", inline: true },
+				{ name: ":musical_note: Music", value: "\`a!commands music\`", inline: true }
+			)
+			msg.channel.send(commandEmbed)
+	} else if(command == "commands") {
+		let args = argumentDictionaryFromMessage("commands", msg.content, ["type"])
+		if(args.type == null) {
+			let commandEmbed = new Discord.MessageEmbed()
+				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+				.setColor("#8074d2")
+				.setTitle("Ava Command List")
+				.attachFiles(['./AvaIcon.png'])
+				.setAuthor(`Ava ${versionString} ${channelName}`, 'attachment://AvaIcon.png')
+				.setThumbnail('attachment://AvaIcon.png')
+				.setTimestamp()
+				.addFields(
+					{ name: ":tools: Moderation", value: "\`a!commands mod\`", inline: true },
+					{ name: ":camera: Image", value: "\`a!commands image\`", inline: true },
+					{ name: ":smile: Fun", value: "\`a!commands fun\`", inline: true },
+					{ name: ":joy: Emoji", value: "\`a!commands emoji\`", inline: true },
+					{ name: ":ok: Text", value: "\`a!commands text\`", inline: true },
+					{ name: ":lock: Private", value: "\`a!commands private\`", inline: true },
+					{ name: ":green_book: Extra", value: "\`a!commands misc\`", inline: true },
+					{ name: ":musical_note: Music", value: "\`a!commands music\`", inline: true }
+				)
+				msg.channel.send(commandEmbed)
+				return
+		}
+		handleCommandDocuments(msg, args.type)
+	} else if(command == "scramble") {
+		let args = argumentDictionaryFromMessage("scramble", msg.content, ["text"])
+		if(args.text == null) {
+			args.text = "You Need Text"
+			msg.channel.send(args.text)
+			return
+		}
+		let a = args.text.split(""),
+				n = a.length
+		for(let i=n-1;i>0;i--) {
+			let j = Math.floor(Math.random() * (i + 1))
+			let tmp = a[j]
+			a[i] = a[j]
+			a[j] = tmp
+		}
+		msg.channel.send(a.join(""))
+	} else if(command == "reverse") {
+		let args = argumentDictionaryFromMessage("reverse", msg.content, ["text"])
+		if(args.text == null) {
+			args.text = "You Need Text"
+			msg.channel.send(args.text)
+			return
+		}
+		msg.channel.send(args.text.split("").reverse().join(""))
+	} else if(command == "say") {
+		let args = argumentDictionaryFromMessage("say", msg.content, ["text"])
+		if(args.text == null) {
+			args.text = "You Need Something To Say!"
+			msg.channel.send(args.text)
+			return
+		}
+		msg.channel.send(args.text.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0'))
+	} else if(command == "purge") {
+		let args = argumentDictionaryFromMessage("purge", msg.content, ["amount"])
+		if(args.amount == null) return
+		if(isNaN(Number(args.amount))) return
+		msg.delete().then(msg => {
+			msg.channel.bulkDelete(args.amount).then(msgs => {
+				let msg = msgs.first()
+				msg.channel.send(`I\'ve cleared \`${args.amount} ${args.amount == 1 ? "message" : "messages"}\` for you!`).then(msg => {
+					setTimeout(msg => {
+						msg.delete()
+					}, 4000, msg)
+				})
+			})
 		})
 	}
 });
