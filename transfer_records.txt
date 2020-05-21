@@ -1,0 +1,16 @@
+From: 猫 uwu
+To: Stocking Anarchy
+Amount: 50
+Reason: You don't need to pay me for being a good person. 
+Timestamp: 1590061415333
+Readable Date: Thu May 21 2020
+Full Date: Thu May 21 2020 07:43:36 GMT-0400 (Eastern Daylight Time)
+
+From: Stocking Anarchy
+To: 猫 uwu
+Amount: 162
+Reason: owo 
+Timestamp: 1590066800016
+Readable Date: Thu May 21 2020
+Full Date: Thu May 21 2020 09:13:20 GMT-0400 (Eastern Daylight Time)
+

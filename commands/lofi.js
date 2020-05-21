@@ -3,6 +3,7 @@ const ytdl = require('ytdl-core');
 module.exports = {
   name: 'lofi',
   description: 'Command for listening to lofi while in a voice channel',
+  type: 'Music',
   async execute(client, msg, args) {
 		// Only try to join the sender's voice channel if they are in one themselves
 		if (msg.member.voice.channel) {

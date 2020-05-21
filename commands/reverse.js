@@ -3,6 +3,7 @@ module.exports = {
   description: 'Reverse some text!',
   args: true,
   usage: '<text_to_reverse>',
+  type: 'Text',
   execute(client, msg, args) {
     args[0] = args.join(" ")
     if(args[0] == null) {

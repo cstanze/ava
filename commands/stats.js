@@ -1,6 +1,7 @@
 module.exports = {
   name: 'stats',
   description: 'Get statistics for Ava',
+  type: 'Misc',
   execute(client, msg, args) {
     const promises = [
       client.shard.fetchClientValues('guilds.cache.size'),

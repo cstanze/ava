@@ -1,7 +1,12 @@
+const fs = require('fs')
+const { didYouMeanCustom } = require('../helpers/didYouMean.js')
+
 module.exports = {
   name: 'reload_command',
   description: 'Reloads a command file',
   useMySQL: true,
+  type: 'Private',
+  aliases: ['rcommand'],
   execute(client, msg, args, con) {
     let id = msg.member.user.id
 		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {
@@ -14,11 +19,15 @@ module.exports = {
 			if(hasResults) {
 				for(let i=0;i<res.length;i++) {
 					if(res[i].userId == id) {
-            if(!args.length) return msg.channel.send(`You did you pass any command to reload, ${message.author}`)
+            if(!args.length) return msg.channel.send(`You did you pass any command to reload, ${msg.author}`)
             const commandName = args[0].toLowerCase()
             const command = msg.client.commands.get(commandName)
                         ||  msg.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
-            if(!command) return msg.channel.send(`There is now command with name or alias \`${commandName}\`, ${message.author}`)
+            let commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+            commandFiles = commandFiles.map(c => c.replace('.js', ''))
+            if(!command) {
+              return msg.channel.send(`There is no command with name or alias \`${commandName}\`, ${msg.author}\nDid You Mean: ***${didYouMeanCustom(commandName, commandFiles)}***`)
+            }
             delete require.cache[require.resolve(`./${command.name}.js`)]
             try {
               const newCommand = require(`./${command.name}.js`)

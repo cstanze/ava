@@ -2,6 +2,7 @@ module.exports = {
   name: 'reload',
   description: 'Reloads the AvaSharder process. (temporarily disables all instances of Ava)',
   useMySQL: true,
+  type: 'Private',
   execute(client, msg, args, con) {
     let id = msg.member.user.id
 		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {

@@ -13,3 +13,8 @@ exports.didYouMean = (word, listType) => {
     return autotype(word)
   }
 }
+
+exports.didYouMeanCustom = (word, list) => {
+	const customCorrect = require('autocorrect')({ words: list })
+	return customCorrect(word)
+}

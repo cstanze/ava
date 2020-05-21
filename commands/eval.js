@@ -2,6 +2,7 @@ module.exports = {
   name: 'eval',
   description: 'Evaluates Some JavaScript',
   useMySQL: true,
+  type: 'Private',
   async execute(client, msg, args, con) {
     let id = msg.member.user.id
 		con.query('SELECT * FROM bot_admins;', (err, res, fields) => {

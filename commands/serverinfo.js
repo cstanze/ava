@@ -4,6 +4,7 @@ const Discord = require('discord.js')
 module.exports = {
   name: 'serverinfo',
   description: 'Get info on the server running Ava!',
+  type: 'Misc',
   execute(client, msg, args) {
     let info = new Discord.MessageEmbed()
 			.setColor('#00ff00')

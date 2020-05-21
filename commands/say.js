@@ -1,6 +1,7 @@
 module.exports = {
   name: 'say',
   description: 'Make Ava Say something!',
+  type: 'Text',
   execute(client, msg, arg) {
     if(args[0] == null) {
 			args[0] = "You Need Something To Say!"

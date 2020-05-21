@@ -10,6 +10,8 @@ module.exports = {
   description: 'Get some nice succubus from r/succubus (beta)',
   cooldown: 4,
   nsfw: true,
+  type: 'NSFW',
+  aliases: ['dragongirl'],
   async execute(client, msg, args) {
     let body = await fetch('https://www.reddit.com/r/succubus.json?sort=top&t=week').then(res => res.json())
     body = body.data

@@ -2,8 +2,8 @@ const { fetchUserWithId } = require('../helpers/fetchMember.js')
 const AsciiTable = require('ascii-table')
 
 module.exports = {
-  name: 'toggleowner',
-  description: 'Toggle a bot owner (this command is for botowners only)',
+  name: 'togglemod',
+  description: 'Toggle a bot mod (this command is for botowners only)',
   useMySQL: true,
   type: 'Private',
   execute(client, msg, args, con) {
@@ -34,16 +34,16 @@ module.exports = {
 					let username = null
 					fetchUserWithId(client, args[0]).then(user => {
 						username = user.username
-						con.query(`INSERT INTO bot_admins (username, userId, timestamp) VALUES (\"${username}\", \"${args[0]}\", \"${new Date().toDateString()}\")`, (err, r,f) => {
+						con.query(`INSERT INTO bot_mods (username, userId, timestamp) VALUES (\"${username}\", \"${args[0]}\", \"${new Date().toDateString()}\")`, (err, r,f) => {
 							if(err) {
 								console.error(err)
-								return msg.channel.send(`Couldn't Create Owner. Check Error Logs`)
+								return msg.channel.send(`Couldn't Create Mod. Check Error Logs`)
 							}
-							msg.channel.send(":tada: Created Owner! :tada:")
+							msg.channel.send(":tada: Created Mod! :tada:")
 						})
 					})
 				} else if(isVerified && !noAdminFound) {
-					con.query(`DELETE FROM bot_admins WHERE userId=\"${args[0]}\"`, (e, r, f) => {
+					con.query(`DELETE FROM bot_mods WHERE userId=\"${args[0]}\"`, (e, r, f) => {
 						if(e) {
 							console.error(e)
 							return;

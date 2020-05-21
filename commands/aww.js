@@ -4,6 +4,7 @@ let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...F
 module.exports = {
   name: 'aww',
   description: 'Gets an image from r/aww',
+  type: 'Image',
   execute(client, msg, args) {
     randomPuppy('aww').then(url => {
 			msg.channel.send(`${randomGivers[Math.floor(Math.random() * randomGivers.length)]} ${url}`)

@@ -1,6 +1,7 @@
 module.exports = {
   name: 'aight',
   description: 'are you feelin aight?',
+  type: 'Fun',
   execute(client, msg, args) {
     const filter = (reaction, user) => {
 			return reaction.emoji.name == '👌'

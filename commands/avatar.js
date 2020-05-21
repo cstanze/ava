@@ -5,6 +5,7 @@ const Discord = require('discord.js')
 module.exports = {
   name: 'avatar',
   description: 'Get your current avatar',
+  type: 'Misc',
   aliases: ['icon', 'pfp'],
   execute(client, msg, args) {
     let avatarEmbed = new Discord.MessageEmbed()

@@ -1,6 +1,7 @@
 module.exports = {
   name: 'snail',
   description: 'Slooowlyy Moooving :snail:',
+  type: 'Emoji',
   execute(client, msg, args) {
     let final = ""
 		if(args[0] == null) args[0] = NaN

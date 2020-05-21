@@ -5,6 +5,7 @@ const ms = require('parse-ms')
 module.exports = {
   name: 'daily',
   description: 'Claim your daily Eris from Ava.',
+  type: 'Currency',
   async execute(client, msg, args) {
     let prefix = 'a!'
     let timeout = 86400000 // 24 hours in milliseconds.

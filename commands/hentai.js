@@ -7,6 +7,7 @@ module.exports = {
   description: 'Get some juicy hentai from r/hentai',
   cooldown: 4,
   nsfw: true,
+  type: 'NSFW',
   execute(client, msg, args) {
     let hentaiEmbed = new Discord.MessageEmbed()
   	 .setColor('#8f14c4')

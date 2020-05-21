@@ -1,6 +1,7 @@
 module.exports = {
   name: 'ban',
   description: 'Ban a mentioned user. No other arguments',
+  type: 'Moderation',
   execute(client, msg, args) {
     let member = msg.mentions.members.first()
 		if(member.user === client.user) {

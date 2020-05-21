@@ -8,6 +8,7 @@ module.exports = {
   args: true,
   usage: '@<user to rob>',
   cooldown: 120,
+  type: 'Currency',
   async execute(client, msg, args) {
     let user = msg.mentions.members.first()
     let target = await db.get(`user_${msg.guild.id}_${user.id}.bal`) // mentioned user's balance

@@ -1,6 +1,7 @@
 module.exports = {
   name: 'removerole',
   description: 'Removes the mentioned role from a user',
+  type: 'Moderation',
   execute(client, msg, args) {
     if(msg.member.hasPermission("MANAGE_ROLES") || msg.member.user.id == '334067823229796367') {
 			let role = msg.mentions.roles.first()

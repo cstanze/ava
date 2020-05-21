@@ -5,8 +5,6 @@ let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...F
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
 const { attachmentIsImage } = require('./helpers/attachments.js')
 const mysql = require('mysql')
-let channelName = "Semi-Stable"
-let versionString = `v1.9.9`
 const connectionDetails = {
 	host: "localhost",
 	user: "pi",
@@ -28,6 +26,7 @@ const db = require('quick.db')
 const Keyv = require('keyv')
 const prefixes = new Keyv('sqlite://./prefixes.sqlite')
 const globalPrefix = 'a!'
+client.queue = new Map()
 
 con.connect(function(err) {
 	if(err) {
@@ -137,18 +136,16 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
 process.on('unhandledRejection', err => {
-	console.error(chalk.red('Uncaught Promise Rejection'), err)
+	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
 })
 
 // MARK: Messages
 client.on('message', async msg => {
-	if(!msg.guild) return;
+	if(msg.channel.type != "text") return;
 	if(!msg.channel.name.includes("spam") && !msg.author.bot) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
-	let prefix
-	if(msg.content.startsWith(globalPrefix)) {
-		prefix = globalPrefix;
-	} else {
-		const guildPrefix = await prefixes.get(msg.guild.id)
+	let prefix = globalPrefix
+	if(!msg.content.startsWith(globalPrefix)) {
+		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
 		if(msg.content.startsWith(guildPrefix)) prefix = guildPrefix
 	}
 	if(!msg.content.startsWith(prefix) || msg.author.bot) return;
@@ -176,7 +173,7 @@ client.on('message', async msg => {
 	setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
 	try {
 		if(command.args && !args.length) {
-			let reply = `You didn't provide any arguments, ${message.author}!`
+			let reply = `You didn't provide any arguments, ${msg.author}!`
 			if(command.usage) {
 				reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``
 			}
@@ -193,8 +190,6 @@ client.on('message', async msg => {
 		} else {
 			await command.execute(client, msg, args)
 		}
-		let chance = Math.random() < 0.4
-		if(msg.prefix == globalPrefix && chance) return msg.channel.send(`**Tip:** You can use \`${msg.prefix}prefix\` to find the prefix for ${msg.guild.name}.\nCurrently, you\'re using the global prefix: \`${globalPrefix}\` and the guild prefix is: \`${await prefixes.get(msg.guild.id)}\``)
 	} catch (error) {
 		console.error(error)
 		msg.reply('there was an error trying to execute that command.')

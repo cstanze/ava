@@ -5,6 +5,7 @@ module.exports = {
   name: 'work',
   description: 'Work for Eris!',
   cooldown: 30,
+  type: 'Currency',
   async execute(client, msg, args) {
     let amount = Math.floor(Math.random() * 350) + 1 // 1-350 random Eris
     let workEmbed = new Discord.MessageEmbed()

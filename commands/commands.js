@@ -9,17 +9,24 @@ module.exports = {
   usage: '<command_type>',
   aliases: ['commands'],
   cooldown: 5,
+  type: 'Utility',
   execute(client, msg, args) {
-    const data = []
-    const { commands } = msg.client
+    const data = 'Here\'s a list of all my commands filtered by type:'
+    const commandsArr = msg.client.commands.array()
 
     if(!args.length) {
-      data.push('Here\'s a list of all my commands:')
-      data.push(`\`\`\`\n${commands.map(command => command.name).join(', ')}\`\`\``)
-      data.push(`\nYou can send \`${msg.prefix}help <command name>\` to get info on a specific command!`)
-
-      return msg.author.send(data, { split: true })
+      let filteredByType = {}
+      for(const command of commandsArr) {
+        filteredByType[command.type] += `${command.name}, `
+      }
+      let finalMsg = ""
+      for(let [key, value] of Object.entries(filteredByType)) {
+        finalMsg += `${emojiForKey(key)} **${key}**\n\`\`\`${value.replace("undefined", "").trim().slice(0, -1)}\`\`\`\n`
+      }
+      return msg.author.send(data)
         .then(() => {
+          msg.author.send(finalMsg)
+          msg.author.send(`\nYou can send \`${msg.prefix}help <command name>\` to get info on a specific command!`)
           if(msg.channel.type == 'dm') return;
           msg.reply('I\'ve sent you a DM with all my commands!')
         })
@@ -51,4 +58,21 @@ module.exports = {
       )
       msg.channel.send(commandDetails)
   }
+}
+
+emojiForKey = key => {
+  let keys = ['Moderation', 'Fun', 'Misc', 'Image', 'Currency', 'Emoji', 'Private', 'Utility', 'NSFW', 'Music', 'Settings', 'Text']
+  if(key == 'Moderation') return ":shield:"
+  if(key == 'Fun') return ":smiley:"
+  if(key == 'NSFW') return ":smirk:"
+  if(key == 'Misc') return ":neutral_face:"
+  if(key == 'Image') return ":frame_photo:"
+  if(key == 'Currency') return ":moneybag:"
+  if(key == 'Emoji') return ":smile:"
+  if(key == 'Private') return ":lock:"
+  if(key == 'Utility') return ":wrench:"
+  if(key == 'Music') return ":loud_sound:"
+  if(key == 'Settings') return ":gear:"
+  if(key == 'Text') return ":regional_indicator_t:"
+  return ":gray_question:"
 }

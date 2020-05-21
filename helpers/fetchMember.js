@@ -1,3 +1,3 @@
-exports.fetchMemberWithId = (guild, userId) => {
-  return guild.members.fetch(userId).then(mem => {return mem})
+exports.fetchUserWithId = (client, userId) => {
+  return client.users.fetch(userId).then(usr => {return usr})
 };

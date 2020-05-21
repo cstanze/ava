@@ -1,6 +1,7 @@
 module.exports = {
   name: 'scramble',
   description: 'Scramble the letters of some text',
+  type: 'Text',
   execute(client, msg, args) {
     args[0] = args.join(" ")
     if(args[0] == null) {
