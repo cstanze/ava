@@ -4,7 +4,7 @@ const Discord = require('discord.js')
 module.exports = {
   name: 'work',
   description: 'Work for Eris!',
-  cooldown: 30,
+  cooldown: 3600000, // 1 hour cooldown
   type: 'Currency',
   async execute(client, msg, args) {
     let amount = Math.floor(Math.random() * 350) + 1 // 1-350 random Eris

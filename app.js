@@ -37,7 +37,7 @@ con.connect(function(err) {
 client.once('ready', async () => {
 	// Production Only
 	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
-	console.log(chalk.blue(`[Ava]`), chalk.green('[Ready]'),'Ready!')
+	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
 	client.user.setPresence({
 		activity: {
       name: 'a!help for help.',
@@ -139,16 +139,23 @@ process.on('unhandledRejection', err => {
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
 })
 
+// MARK: Debugging Information Logs (Enable Only If Completely Necessary)
+/*
+ * client.on('debug', debugInfo => {
+ *	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`),chalk.yellow(`[Debug]`), debugInfo)
+ * })
+ */
+
 // MARK: Messages
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
-	if(!msg.channel.name.includes("spam") && !msg.author.bot) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
+	if(!msg.channel.name.includes("spam") && !msg.author.bot && msg.webhookID) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
 	let prefix = globalPrefix
 	if(!msg.content.startsWith(globalPrefix)) {
 		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
 		if(msg.content.startsWith(guildPrefix)) prefix = guildPrefix
 	}
-	if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+	if(!msg.content.startsWith(prefix) || msg.author.bot || msg.webhookID) return;
 	let args = msg.content.slice(prefix.length).split(/\s+/)
 	let commandName = args.shift().toLowerCase()
 	let command = client.commands.get(commandName)

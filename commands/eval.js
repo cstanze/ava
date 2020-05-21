@@ -16,7 +16,7 @@ module.exports = {
 				for(let i=0;i<res.length;i++) {
 					if(res[i].userId == id) {
 						try {
-							let evalReturn = eval(msg.content.replace("a!eval ",""))
+							let evalReturn = eval(msg.content.replace(`${msg.prefix}eval`,""))
 							msg.channel.send(`\`\`\`\n${evalReturn == null || undefined ? "null" : evalReturn}\`\`\``)
 							return;
 						} catch(e) {

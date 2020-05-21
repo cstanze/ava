@@ -28,7 +28,6 @@
     "long": "^4.0.0",
     "mysql": "*",
     "node-fetch": "^2.6.0",
-    "opusscript": "0.0.7",
     "parse-ms": "^2.1.0",
     "ps-node": "^0.1.6",
     "quick.db": "^7.0.0-b21",
