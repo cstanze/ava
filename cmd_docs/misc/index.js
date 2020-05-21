@@ -12,7 +12,7 @@ class MiscDocs extends Docs {
     `
   }
   listing() {
-    return ['botowners', 'changelog', 'nodelist', 'ping', 'serverinfo', 'shard (Server)', 'stats', 'whatshard (Client)']
+    return ['botowners', 'changelog', 'ping', 'serverinfo', 'shard (Server)', 'stats', 'whatshard (Client)']
   }
 }
 

@@ -10,7 +10,7 @@ exports.argumentDictionaryFromMessage = (commandName, content, labels) => {
   args = args != [null] ? (singular ? args : (typeof args.split(", ") == "string" ? (typeof args.split(",") == "string" ? args.split(" ") : args.split(",")) : args.split(", "))) : [null]
   let argDictionary = {}
   if(singular) {
-    argDictionary[labels[0]] = args
+    argDictionary[labels[0]] = args[0] == null ? args[0] : args
     return argDictionary
   }
   for(let i=0;i<args.length;i++) {

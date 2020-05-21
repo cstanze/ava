@@ -12,7 +12,7 @@ class PrivateDocs extends Docs {
     `
   }
   listing() {
-    return ['eval', 'reload', 'restart', 'toggleowner']
+    return ['eval', 'reload', 'toggleowner', 'reload_command']
   }
 }
 

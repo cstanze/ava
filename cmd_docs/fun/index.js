@@ -11,7 +11,7 @@ class FunDocs extends Docs {
     `
   }
   listing() {
-    return ['bird', 'crab', 'microbe', 'rero', 'simpsons', 'snail', 'say']
+    return ['bird', 'crab', 'rero', 'snail', 'say', 'aight']
   }
 }
 

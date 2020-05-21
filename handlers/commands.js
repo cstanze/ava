@@ -39,13 +39,12 @@ exports.handleCommandDocuments = (msg, type) => {
     .setColor('#c43714')
     .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
     .setTitle(`Command Topic: \`${type}\``)
-    .attachFiles(['./AvaIcon.png'])
-    .setAuthor(`${type.charAt(0).toUpperCase()+type.substr(1)} Documentation`, 'attachment://AvaIcon.png')
-    .setThumbnail('attachment://AvaIcon.png')
+    .attachFiles(['./AvaIcon.jpg'])
+    .setAuthor(`${type.charAt(0).toUpperCase()+type.substr(1)} Documentation`, 'attachment://AvaIcon.jpg')
+    .setThumbnail('attachment://AvaIcon.jpg')
     .setTimestamp()
     .setDescription(docs.description())
     .addField("Command Listing", formattedListings, false)
-  console.log(commandEmbed.toString())
   msg.channel.send(commandEmbed)
 }
 
