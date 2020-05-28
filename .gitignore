@@ -1,3 +1,5 @@
 .DS_Store
 config.json
 json.sqlite
+package-lock.json
+node_modules
