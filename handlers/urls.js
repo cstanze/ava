@@ -1,15 +1,10 @@
-exports.isValidYoutube = (url) => {
-  if(!url.includes("youtube.com")) {
-    return false
+exports.domainName = (url) => {
+  if(typeof url != 'string') return
+  if(url.indexOf('//') > -1) {
+    hostname = url.split('/')[2]
+  } else {
+    hostname = url.split('/')[0]
   }
-  if(!url.startsWith("https://")) {
-    return false
-  }
-  if(!url.includes("/watch?v=")) {
-    return false
-  }
-  if(!(url.startsWith("https://www.youtube.com/watch?v=") || url.startsWith("https://youtube.com/watch?v="))) {
-    return false
-  }
-  return true
+  hostname = hostname.split(':')[0].split('?')[0].replace('www', '').split('.')[0]
+  return hostname
 }

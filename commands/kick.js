@@ -2,6 +2,7 @@ module.exports = {
   name: 'kick',
   description: 'Mention a user to kick and send the message.',
   type: 'Moderation',
+  permissionsLevel: 'Server Moderator',
   execute(client, msg, args) {
     if(msg.member.hasPermission("KICK_MEMBERS")) {
 			const user = msg.mentions.users.first();

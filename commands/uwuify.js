@@ -19,6 +19,7 @@ module.exports = {
 		uwu = uwu.replace("s", "sh")
     uwu = uwu.replace("S", "Sh")
 		uwu = uwu.replace(/!+/g, `  >w< `)
+    uwu = uwu.replace('source', 'sawuice')
 		let f = Math.random() > 0.25
 		if(f) {
 			let c = uwu.charAt(0)

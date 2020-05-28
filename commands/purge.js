@@ -2,6 +2,7 @@ module.exports = {
   name: 'purge',
   description: 'Purge messages in bulk!',
   type: 'Moderation',
+  permissionsLevel: 'Server Moderator',
   execute(client, msg, args) {
     if(args[0] == null) return
 		if(isNaN(Number(args[0]))) return

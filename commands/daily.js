@@ -7,7 +7,6 @@ module.exports = {
   description: 'Claim your daily Eris from Ava.',
   type: 'Currency',
   async execute(client, msg, args) {
-    let prefix = 'a!'
     let timeout = 86400000 // 24 hours in milliseconds.
     let amount = Math.floor(Math.random() * 300) + 1
 
@@ -20,7 +19,7 @@ module.exports = {
     let dailyEmbed = new Discord.MessageEmbed()
     .setAuthor(`Daily Eris`, msg.member.user.avatarURL({ size: 512, dynamic: true }))
     .setColor("#8074d2")
-    .setDescription(`**Daily Eris!** You can check your Eris balance by using ${prefix}bal`)
+    .setDescription(`**Daily Eris!** You can check your Eris balance by using ${msg.prefix}bal`)
     .addField(`Collected`, amount)
 
     msg.channel.send(dailyEmbed)

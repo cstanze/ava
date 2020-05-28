@@ -6,11 +6,10 @@ let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheati
 module.exports = {
   name: 'leaderboard',
   description: 'Gets a leaderboard of members who have the most Eris.',
-  aliases: ['top', 'best'],
+  aliases: ['top'],
   cooldown: 5,
   type: 'Currency',
   async execute(client, msg, args) {
-    let prefix = 'a!'
     let money = await db.startsWith(`user_${msg.guild.id}`).sort((u1, u2) => u2.data.bal - u1.data.bal)
     let content = ""
     for(let i=0;i<(money.length < 10 ? money.length : 10);i++) {

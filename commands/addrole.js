@@ -2,6 +2,7 @@ module.exports = {
   name: 'addrole',
   description: 'Adds a mentioned role to the mentioned user',
   type: 'Moderation',
+  permissionsLevel: 'Server Moderator',
   execute(client, msg, args) {
     if(msg.member.hasPermission("MANAGE_ROLES") || msg.member.user.id == "334067823229796367") {
 			let role = msg.mentions.roles.array()[0]

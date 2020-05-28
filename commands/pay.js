@@ -21,7 +21,7 @@ module.exports = {
       return msg.channel.send(`You forgot to mention somebody to send Eris to.`)
     }
 
-    if(!args[1]) {
+    if(!args[1] || isNaN(Number(args[1]))) {
       msg.channel.send(`You didn\'t provide any arguments, ${msg.author}\nThis is the expected usage: \`${msg.prefix}pay @<user to pay> <amount>\`\nDon't forget, the usage is strict and you need to mention the user before adding the amount of Eris you want to transfer`)
       return msg.channel.send(`Please specify an amount to transfer.`)
     }
@@ -33,7 +33,7 @@ module.exports = {
       }
     }
 
-    if(msg.content.includes('-')) {
+    if(args[1].includes('-')) {
       return msg.channel.send(`You Can't pay negative Eris to a person. That would be mean.`)
     }
 
@@ -53,6 +53,6 @@ module.exports = {
     msg.channel.send(payEmbed)
     db.add(`user_${msg.guild.id}_${user.id}.bal`, args[1])
     db.subtract(`user_${msg.guild.id}_${msg.member.id}.bal`, args[1])
-    fs.appendFileSync('./transfer_records.txt', `From: ${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\nTo: ${typeof user.nickname == "string" ? user.nickname : user.user.username}\nAmount: ${args[1]}\nReason: ${reason}\nTimestamp: ${Date.now()}\nReadable Date: ${new Date().toDateString()}\nFull Date: ${new Date().toString()}\n\n`)
+    fs.appendFileSync('./transfer_records.txt', `From: ${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\nTo: ${typeof user.nickname == "string" ? user.nickname : user.user.username}\nAmount: ${args[1]}\nReason: ${reason}\nTimestamp: ${Date.now()}\nReadable Date: ${new Date().toDateString()}\nFull Date: ${new Date().toString()}\nGuild ID: ${msg.guild.id}\nGuild Name: ${msg.guild.name}\n\n`)
   }
 }

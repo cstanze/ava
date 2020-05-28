@@ -1,13 +1,12 @@
-const { handleCommandDocuments } = require('../handlers/commands.js')
 const { prefix } = require('../config.json')
 let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 
 module.exports = {
-  name: 'help',
+  name: 'commands',
   description: 'Command searching',
   usage: '<command_type>',
-  aliases: ['commands'],
+  aliases: ['help', 'command'],
   cooldown: 5,
   type: 'Utility',
   execute(client, msg, args) {
@@ -17,10 +16,12 @@ module.exports = {
     if(!args.length) {
       let filteredByType = {}
       for(const command of commandsArr) {
-        filteredByType[command.type] += `${command.name}, `
+        let commandType = command.type || 'Uncategorized'
+        filteredByType[commandType] += `${command.name}, `
       }
       let finalMsg = ""
       for(let [key, value] of Object.entries(filteredByType)) {
+        if(key == 'Private') continue
         finalMsg += `${emojiForKey(key)} **${key}**\n\`\`\`${value.replace("undefined", "").trim().slice(0, -1)}\`\`\`\n`
       }
       return msg.author.send(data)
@@ -36,7 +37,7 @@ module.exports = {
         })
     }
     const name = args[0].toLowerCase()
-    const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name))
+    const command = client.commands.get(name) || client.commands.find(c => c.aliases && c.aliases.includes(name))
 
     if(!command) {
       return msg.reply(`Hmm... \`${name}\` doesn't seem to be a valid command.`)
@@ -53,6 +54,7 @@ module.exports = {
         { name: 'Aliases', value: `${typeof command.aliases == "undefined" ? 'None' : command.aliases.join(", ")}`, inline: false },
         { name: 'Description', value: `${command.description}`, inline: false },
         { name: 'Usage', value: `\`${msg.prefix}${command.name} ${command.usage || ""}\``, inline: false },
+        { name: 'Example', value: `\`${msg.prefix}${command.name} ${command.example || ""}\``, inline: false },
         { name: 'Cooldown', value: `${command.cooldown || 3} second(s)`, inline: true },
         { name: 'NSFW', value: `${typeof command.nsfw == "boolean"? (command.nsfw ? "Yes" : "No") : "No"}`, inline: true }
       )
@@ -74,5 +76,8 @@ emojiForKey = key => {
   if(key == 'Music') return ":loud_sound:"
   if(key == 'Settings') return ":gear:"
   if(key == 'Text') return ":regional_indicator_t:"
-  return ":gray_question:"
+  if(key == 'Weeb Commands') return '<:blush_eoto:693817007979757589>'
+  if(key == 'Search') return ':compass:'
+  if(key == 'Uncategorized') return ':question:'
+  return ":grey_question:"
 }

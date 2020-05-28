@@ -1,38 +1,43 @@
 const Discord = require('discord.js')
 const config = require('./config')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
+let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const { attachmentIsImage } = require('./helpers/attachments.js')
-const mysql = require('mysql')
-const connectionDetails = {
-	host: "localhost",
-	user: "pi",
-	password: "root",
-	database: 'avadb'
-}
+const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
 const chalk = require('chalk')
-let con = mysql.createConnection(connectionDetails);
-const fetch = require('node-fetch');
 const fs = require('fs')
+const Enmap = require('enmap')
+client.logger = require('./modules/Logger')
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command] [Load]`), `Loading a total of ${commandFiles.length} commands`)
 for(const file of commandFiles) {
 	const command = require(`./commands/${file}`)
+	console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Loading]`), `Loading command with name: ${command.name}`)
 	client.commands.set(command.name, command)
 }
-const cooldowns = new Discord.Collection()
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
+console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event] [Load]`), `Loading a total of ${eventFiles.length} events`)
+for(const ev of eventFiles) {
+	const eventName = ev.split('.')[0]
+	console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Loading]`), `Loading event with name: ${eventName}`)
+	const evx = require(`./events/${ev}`)
+	client.on(eventName, evx.bind(null, client))
+}
+client.config = require('./advanced_config.js')
+// Generate a cache of client permissions for pretty perm names in commands
+client.levelCache = {}
+for(let i=0;i<client.config.permLevels.length;i++) {
+	const thisLevel = client.config.permLevels[i]
+	client.levelCache[thisLevel.name] = thisLevel.level
+}
+client.cooldowns = new Discord.Collection()
+// Thanks to Evie's awesome EnMap module, we can save a collection to disk. Perfect for per-server configs
+// This makes things really, really, really easy for us!
+client.settings = new Enmap({ name: 'settings' })
 const db = require('quick.db')
-const Keyv = require('keyv')
-const prefixes = new Keyv('sqlite://./prefixes.sqlite')
 const globalPrefix = 'a!'
-client.queue = new Map()
-
-con.connect(function(err) {
-	if(err) {
-		console.log(chalk.red('error'), `when connecting to db: ${err}`);
-	}
-});
+require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
 	// Production Only
@@ -47,7 +52,6 @@ client.once('ready', async () => {
   })
 });
 
-// MARK: Boards (Starboard, Sinboard, etc.)
 client.on('messageReactionAdd', async (reaction, user) => {
 	if (reaction.partial) {
 		try {
@@ -57,86 +61,125 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return
 		}
 	}
-	setTimeout((reaction, user) => {
-		if(!(reaction.count > 1)) {
-			if(reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
-				let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
-				if(!starboard) return
-				let msg = reaction.message
-				let hasAttachment = false
-				if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
-				let isSpoiler = false
-				let attachment = hasAttachment ? msg.attachments.first() : null
-				if(hasAttachment) isSpoiler = attachment.spoiler
-				if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
-				let reactionClient = reaction.message.member.user
-				let starredEmbed = new Discord.MessageEmbed()
-				.setColor('#14c49e')
-				.setDescription(reaction.message.content)
-				.addField('Original', `[Jump!](${reaction.message.url})`)
-				.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-				.setTimestamp()
-				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
-				if(hasAttachment) {
-					if(attachmentIsImage(attachment)) {
-						if(isSpoiler) {
-							starredEmbed.attachFiles(['./images/spoiler.png'])
-							.setImage('attachment://spoiler.png')
-						} else {
-							starredEmbed.setImage(attachment.url)
-						}
+	if((reaction.count >= 3) && (reaction.count <= 3)) {
+		if(reaction.emoji.name == '👏') {
+			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "honorable-mentions")
+			if(!starboard) return
+			let msg = reaction.message
+			let hasAttachment = false
+			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
+      let isSpoiler = false
+      let attachment = hasAttachment ? msg.attachments.first() : null
+			if(hasAttachment) isSpoiler = attachment.spoiler
+	    if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
+			let reactionClient = reaction.message.member.user
+			let starredEmbed = new Discord.MessageEmbed()
+			.setColor('#14c49e')
+			.setDescription(reaction.message.content)
+			.addField('Original', `[Jump!](${reaction.message.url})`)
+			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+			.setTimestamp()
+			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			starboard.send(`:clap: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+			if(hasAttachment) {
+				if(attachmentIsImage(attachment)) {
+					if(isSpoiler) {
+						starredEmbed.attachFiles(['./images/spoiler.png'])
+						.setImage('attachment://spoiler.png')
 					} else {
-						starredEmbed.addFields(
-							{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
-						)
+						starredEmbed.setImage(attachment.url)
 					}
 				}
-				starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-				starboard.send(starredEmbed)
-			} else if(reaction.emoji.name == "sin") {
-				let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == "hall-of-sin")
-				if(!sinboard) {
-					return;
-				}
-				let msg = reaction.message
-				let hasAttachment = false
-				if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
-				let isSpoiler = false
-				let attachment = hasAttachment ? msg.attachments.first() : null
-				if(hasAttachment) isSpoiler = attachment.spoiler
-				if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
-				let reactionClient = reaction.message.member.user
-				let sinnedEmbed = new Discord.MessageEmbed()
-				.setColor('#14c49e')
-				.setDescription(reaction.message.content)
-				.addField('Original', `[Jump!](${reaction.message.url})`)
-				.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-				.setTimestamp()
-				.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
-				if(hasAttachment) {
-					if(attachmentIsImage(attachment)) {
-						if(sinboard.nsfw) {
-							sinnedEmbed.attachFiles(['./images/spoiler.png'])
-							.setImage('attachment://spoiler.png')
-						} else {
-							sinnedEmbed.setImage(attachment.url)
-						}
-					} else {
-						sinnedEmbed.addFields(
-							{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
-						)
-					}
-				}
-				sinboard.send(`<:${reaction.emoji.name}:${reaction.emoji.id}> **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-				sinboard.send(sinnedEmbed)
+				starboard.send(attachment.url)
 			}
+			starboard.send(starredEmbed)
 		}
-	}, 7000, reaction, user)
+	} else if(!(reaction.count > 1)) {
+		if(reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
+			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
+			if(!starboard) return
+			let msg = reaction.message
+			let hasAttachment = false
+			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
+      let isSpoiler = false
+      let attachment = hasAttachment ? msg.attachments.first() : null
+			if(hasAttachment) isSpoiler = attachment.spoiler
+	    if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
+			let reactionClient = reaction.message.member.user
+			let starredEmbed = new Discord.MessageEmbed()
+			.setColor('#14c49e')
+			.setDescription(reaction.message.content)
+			.addField('Original', `[Jump!](${reaction.message.url})`)
+			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+			.setTimestamp()
+			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			if(hasAttachment) {
+				if(attachmentIsImage(attachment)) {
+					if(isSpoiler) {
+						starredEmbed.attachFiles(['./images/spoiler.png'])
+						.setImage('attachment://spoiler.png')
+					} else {
+						starredEmbed.setImage(attachment.url)
+					}
+				} else {
+					starredEmbed.addFields(
+						{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
+					)
+				}
+			}
+			starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+			starboard.send(starredEmbed)
+		} else if(reaction.emoji.name == "sin") {
+			let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == "hall-of-sin")
+			if(!sinboard) {
+				return;
+			}
+			let msg = reaction.message
+			let hasAttachment = false
+			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
+			let isSpoiler = false
+			let attachment = hasAttachment ? msg.attachments.first() : null
+			if(hasAttachment) isSpoiler = attachment.spoiler
+			if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
+			let reactionClient = reaction.message.member.user
+			let sinnedEmbed = new Discord.MessageEmbed()
+			.setColor('#14c49e')
+			.setDescription(reaction.message.content)
+			.addField('Original', `[Jump!](${reaction.message.url})`)
+			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+			.setTimestamp()
+			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			if(hasAttachment) {
+				if(attachmentIsImage(attachment)) {
+					if(sinboard.nsfw) {
+						sinnedEmbed.attachFiles(['./images/spoiler.png'])
+						.setImage('attachment://spoiler.png')
+					} else {
+						sinnedEmbed.setImage(attachment.url)
+					}
+				} else {
+					sinnedEmbed.addFields(
+						{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
+					)
+				}
+			}
+			sinboard.send(`<:${reaction.emoji.name}:${reaction.emoji.id}> **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+			sinboard.send(sinnedEmbed)
+		}
+	}
 })
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
 process.on('unhandledRejection', err => {
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
+	console.error(chalk.red('[Uncaught] Promise Rejection'), chalk.yellow('[Stack Trace]'), err.stack)
+})
+
+// MARK: Catch UncaughtException
+process.on('uncaughtException', (err) => {
+	const errorMsg = err.stack.replace(new RegExp(`${__dirname}/`, 'g'), './')
+	console.log(chalk.red('[Uncaught] Exception'), errorMsg)
+	console.error(err)
 })
 
 // MARK: Debugging Information Logs (Enable Only If Completely Necessary)
@@ -149,11 +192,18 @@ process.on('unhandledRejection', err => {
 // MARK: Messages
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
-	if(!msg.channel.name.includes("spam") && !msg.author.bot && msg.webhookID) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
+	// if(msg.author.id == '364891173858312192') msg.react('🐧')
+	if(msg.content.includes(client.token)) msg.edit(client.clean(client, msg.content))
+	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
+	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, 2)
 	let prefix = globalPrefix
 	if(!msg.content.startsWith(globalPrefix)) {
 		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
 		if(msg.content.startsWith(guildPrefix)) prefix = guildPrefix
+	}
+	const mentionPrefix = new RegExp(`^<@!?${client.user.id}>( |)$`)
+	if(msg.content.match(mentionPrefix)) {
+		return msg.reply(`My global prefix is: \`${globalPrefix}\`. ${msg.member.hasPermission('MANAGE_GUILD') ? `You can use \`${globalPrefix}prefix <prefix>\` to change the prefix for this guild!` : `You can use \`${globalPrefix}prefix\` to find the prefix for this guild!`}`)
 	}
 	if(!msg.content.startsWith(prefix) || msg.author.bot || msg.webhookID) return;
 	let args = msg.content.slice(prefix.length).split(/\s+/)
@@ -161,11 +211,11 @@ client.on('message', async msg => {
 	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 	if(!command) return;
-	if(!cooldowns.has(command.name)) {
-		cooldowns.set(command.name, new Discord.Collection())
+	if(!client.cooldowns.has(command.name)) {
+		client.cooldowns.set(command.name, new Discord.Collection())
 	}
 	const now = Date.now()
-	const timestamps = cooldowns.get(command.name)
+	const timestamps = client.cooldowns.get(command.name)
 	const cooldownAmount = (command.cooldown || 3) * 1000
 
 	if(timestamps.has(msg.author.id)) {
@@ -178,11 +228,24 @@ client.on('message', async msg => {
 	}
 	timestamps.set(msg.author.id, now)
 	setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
+	const level = client.permLevel(msg)
+	const settings = msg.settings = client.getSettings(msg.guild)
+	if(level < client.levelCache[command.permissionsLevel || "User"]) {
+		if(settings.systemNotice == "true") {
+			return msg.channel.send(`You do not have the right permissions to use this command. Your permissions level is ${level} (${client.config.permLevels.find(l => l.level == level).name})\nThis command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
+		}
+		return
+	}
+	msg.author.permLevel = level
+	msg.member.user.permLevel = level
 	try {
 		if(command.args && !args.length) {
-			let reply = `You didn't provide any arguments, ${msg.author}!`
+			let reply = `Looks like you didn't provide any arguments.`
 			if(command.usage) {
-				reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``
+				reply += `\nProper Usage: \`${prefix}${command.name} ${command.usage}\``
+			}
+			if(command.example) {
+				reply += `\n\`${prefix}${command.name} ${command.example}\``
 			}
 			return msg.channel.send(reply)
 		}
@@ -190,13 +253,7 @@ client.on('message', async msg => {
 			return msg.channel.send(`This is not an nsfw channel, therefore I can\'t send this in here!`)
 		}
 		msg.prefix = prefix
-		if(command.useMySQL) {
-			await command.execute(client, msg, args, con)
-		} else if(command.handlesPrefix) {
-			await command.execute(client, msg, args, prefixes)
-		} else {
-			await command.execute(client, msg, args)
-		}
+		await command.execute(client, msg, args)
 	} catch (error) {
 		console.error(error)
 		msg.reply('there was an error trying to execute that command.')

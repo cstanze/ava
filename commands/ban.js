@@ -2,8 +2,10 @@ module.exports = {
   name: 'ban',
   description: 'Ban a mentioned user. No other arguments',
   type: 'Moderation',
+  permissionsLevel: 'Server Moderator',
   execute(client, msg, args) {
     let member = msg.mentions.members.first()
+    if(!member) return msg.channel.send(`You didn't mention a user to ban!`)
 		if(member.user === client.user) {
 			msg.channel.send("I can\'t ban myself, silly!")
 			return;

@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core');
+const fs = require('fs')
 
 module.exports = {
   name: 'lofi',
@@ -13,7 +14,7 @@ module.exports = {
 				mbr.voice.setMute(true).catch(console.error)
 			})
       let connection = await msg.member.voice.channel.join()
-			let randomVideo = ['https://www.youtube.com/watch?v=4X_uoKF2Wvo', 'https://www.youtube.com/watch?v=wAPCSnAhhC8', 'https://www.youtube.com/watch?v=ITRiuFIWV54', 'https://www.youtube.com/watch?v=5xRuk6SW-sg', 'https://www.youtube.com/watch?v=ivNIpLdzh7M']
+			let randomVideo = await fs.readFileSync('./lofi-videos.txt').toString().split('\n')
 			let randomNumber = Math.floor(Math.random()*randomVideo.length)
 			let video = randomVideo[randomNumber]
 			let dispatcher = connection.play(ytdl(video, { filter: 'audioonly', liveBuffer: 5000 }));
