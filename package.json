@@ -26,7 +26,6 @@
     "ffmpeg-static": "^4.2.0",
     "g-i-s": "^2.1.5",
     "keyv": "^4.0.1",
-    "libsodium-wrappers": "^0.7.6",
     "long": "^4.0.0",
     "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
