@@ -11,6 +11,7 @@ module.exports = {
   description: 'Tim Cook draws you on his iPad',
   type: 'User',
   async execute(client, msg, args) {
+    return msg.channel.send(`This command is a WIP (work in progress). Please try again later.`)
     const target = msg.mentions.members.first() || msg.member
     msg.channel.send(`Getting and organizing profile information for: \`${target.nickname || target.user.username}\`...`).then(async mxg => {
       const ship = "No Ship Found"
