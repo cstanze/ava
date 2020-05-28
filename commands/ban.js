@@ -3,6 +3,7 @@ module.exports = {
   description: 'Ban a mentioned user. No other arguments',
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',
+  example: '@User',
   execute(client, msg, args) {
     let member = msg.mentions.members.first()
     if(!member) return msg.channel.send(`You didn't mention a user to ban!`)
