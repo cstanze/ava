@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { didYouMeanCustom } = require('../helpers/didYouMean.js')
+const { didYouMeanCustom } = require('../helpers/didyoumean.js')
 const db = require('quick.db')
 
 module.exports = {

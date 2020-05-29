@@ -4,7 +4,7 @@
   "description": "Ava Discord Bot",
   "main": "app.js",
   "scripts": {
-    "start": "sudo node shard.js"
+    "start": "node shard.js"
   },
   "keywords": [],
   "author": "Daydream",
