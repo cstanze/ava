@@ -1,4 +1,3 @@
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 let oldChannelName = "Semi-Stable"
@@ -22,7 +21,7 @@ module.exports = {
 			.setDescription(`Current Ava Version: ${versionString} ${channelName}`)
 			.setThumbnail('attachment://AvaIcon.jpg')
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
     changes.forEach(change => {
       change.name = change.name.replace('<ocn>', oldChannelName).replace('<cn>', channelName).replace('[', '\`').replace(']', '\`').replace('<prefix>', msg.prefix)
       change.value = change.value.replace('[', '\`').replace(']', '\`').replace('<prefix>', msg.prefix)

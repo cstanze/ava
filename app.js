@@ -1,9 +1,11 @@
 const Discord = require('discord.js')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const { attachmentIsImage } = require('./helpers/attachments.js')
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
+client.randomFooters = ['Proudly created in nano', 'Puppers!', ':O', 'CPU Overheating...', 'Quacc', 'Welcome Cthulu!', 'Widen That Keyhole...', '01000110', 'Schrodinger\'s Trap', 'Arrest Him!', 'ANARCHY', 'Made In Canada', 'I used to be called Anarchy Angola.', 'My flag is two colors and a leaf', 'bruh', 'Who the fuck put my cat on the z-axis', 'upset', 'I\'m 5 years old', 'OwO Whats This?', 'Lolicon', 'NEET', 'Shut-In NEET', 'Kazuma and Megumin', 'Cat On Z Axis', 'Clean up on aisle 5', 'Wifi Slow', 'YooHoon', 'm-minecwaft uwu!', '>w<', 'Senko-san']
+client.randomNSFWFooters = ['Fill Me Senpai', 'He is my senpai', 'OwO Nice Stuff Senpai', 'owo nice shtuff shenpai', 'f-fiww me with youw cweamy eshense uwu', 'ara ara~', '~ara ara ara ara~!', 'nya~', 'nya!']
+client.badTokens = ['retard', 'idiot', 'bitch', 'stupid', 'ass', 'asshat', 'dick', 'dickhead', 'shit', 'piss', 'pissoff', 'asshole', 'bastard', 'cunt', 'bollocks', 'bugger', 'hell', 'choad', 'crikey', 'rubbish', 'trash', 'shag', 'wanker', 'wank', 'twat']
 const chalk = require('chalk')
 const fs = require('fs')
 const Enmap = require('enmap')
@@ -61,8 +63,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return
 		}
 	}
+	if(reaction.message.channel.type != "text") return
 	if((reaction.count >= 3) && (reaction.count <= 3)) {
-		if(reaction.emoji.name == '👏') {
+		if(reaction.emoji.name == '👏' || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
 			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "honorable-mentions")
 			if(!starboard) return
 			let msg = reaction.message
@@ -79,7 +82,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			.addField('Original', `[Jump!](${reaction.message.url})`)
 			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
 			starboard.send(`:clap: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
@@ -112,7 +115,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			.addField('Original', `[Jump!](${reaction.message.url})`)
 			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(isSpoiler) {
@@ -148,7 +151,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			.addField('Original', `[Jump!](${reaction.message.url})`)
 			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(sinboard.nsfw) {
@@ -194,8 +197,8 @@ client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
 	// if(msg.author.id == '364891173858312192') msg.react('🐧')
 	if(msg.content.includes(client.token)) msg.edit(client.clean(client, msg.content))
-	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, 1)
-	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, 2)
+	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
+	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
 	let prefix = globalPrefix
 	if(!msg.content.startsWith(globalPrefix)) {
 		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
@@ -258,6 +261,7 @@ client.on('message', async msg => {
 		console.error(error)
 		msg.reply('there was an error trying to execute that command.')
 	}
+	db.set(`user_${msg.guild.id}_${msg.author.id}.lastCommand`, commandName)
 });
 
 client.login(config.token)

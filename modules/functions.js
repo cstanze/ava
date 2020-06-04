@@ -61,8 +61,9 @@ module.exports = client => {
     const response = await client.awaitReply(msg, "Question?")
     msg.reply(`Something, something, something, ${response}!`)
   */
-  client.awaitReply = async (msg, question, limit = 60000) => {
-    const filter = m => m.author.id == msg.author.id
+  client.awaitReply = async (msg, question, limit = 60000, id = 'nid') => {
+    if(id == 'nid') id = msg.author.id
+    const filter = m => m.author.id == id
     await msg.channel.send(question)
     try {
       const collected = await msg.channel.awaitMessages(filter, { max: 1, time: limit, errors: ['time'] })
@@ -93,4 +94,41 @@ module.exports = client => {
   })
   // await client.wait(1000) to "pause" for 1 second
   client.wait = require('util').promisify(setTimeout)
+  // replace the special characters in a string.
+  client.replaceSpecials = (str) => {
+    let token = str.replace(  '~' , '')
+    token =     token.replace('`' , '')
+    token =     token.replace('!' , '')
+    token =     token.replace('@' , '')
+    token =     token.replace('#' , '')
+    token =     token.replace('$' , '')
+    token =     token.replace('%' , '')
+    token =     token.replace('^' , '')
+    token =     token.replace('&' , '')
+    token =     token.replace('*' , '')
+    token =     token.replace('(' , '')
+    token =     token.replace(')' , '')
+    token =     token.replace('-' , '')
+    token =     token.replace('_' , '')
+    token =     token.replace('{' , '')
+    token =     token.replace('[' , '')
+    token =     token.replace('}' , '')
+    token =     token.replace(']' , '')
+    token =     token.replace('\'', '')
+    token =     token.replace('"' , '')
+    token =     token.replace('<' , '')
+    token =     token.replace(':' , '')
+    token =     token.replace(';' , '')
+    token =     token.replace('>' , '')
+    token =     token.replace(',' , '')
+    token =     token.replace('.' , '')
+    token =     token.replace('?' , '')
+    token =     token.replace('/' , '')
+    token =     token.replace('\\', '')
+    return token
+  }
+  // Format Numbers in the Thousands with commas
+  client.numbersWithCommas = (x) => {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+  }
 }

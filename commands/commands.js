@@ -1,5 +1,4 @@
 const { prefix } = require('../config.json')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 
 module.exports = {
@@ -43,7 +42,7 @@ module.exports = {
       return msg.reply(`Hmm... \`${name}\` doesn't seem to be a valid command.`)
     }
     let commandDetails = new Discord.MessageEmbed()
-      .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+      .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
       .setColor("#8074d2")
       .setTitle(`Details for: ${command.name}`)
       .attachFiles(['./AvaIcon.jpg'])
@@ -51,8 +50,8 @@ module.exports = {
       .setAuthor(`Ava Command Details`, 'attachment://AvaIcon.jpg')
       .setTimestamp()
       .addFields(
-        { name: 'Aliases', value: `${typeof command.aliases == "undefined" ? 'None' : command.aliases.join(", ")}`, inline: false },
-        { name: 'Description', value: `${command.description}`, inline: false },
+        { name: 'Aliases', value: `${typeof command.aliases == "undefined" ? 'None' : command.aliases.join(", ")}`, inline: true },
+        { name: 'Description', value: `${command.description}`, inline: true },
         { name: 'Usage', value: `\`${msg.prefix}${command.name} ${command.usage || ""}\``, inline: false },
         { name: 'Example', value: `\`${msg.prefix}${command.name} ${command.example || ""}\``, inline: false },
         { name: 'Cooldown', value: `${command.cooldown || 3} second(s)`, inline: true },
@@ -76,7 +75,7 @@ emojiForKey = key => {
   if(key == 'Music') return ":loud_sound:"
   if(key == 'Settings') return ":gear:"
   if(key == 'Text') return ":regional_indicator_t:"
-  if(key == 'Weeb Commands') return '<:blush_eoto:693817007979757589>'
+  if(key == 'User') return '<:blush_eoto:693817007979757589>'
   if(key == 'Search') return ':compass:'
   if(key == 'Uncategorized') return ':question:'
   return ":grey_question:"

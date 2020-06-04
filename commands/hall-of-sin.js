@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 
 module.exports = {
   name: 'hall-of-sin',
@@ -13,7 +12,7 @@ module.exports = {
   execute(client, msg, args) {
     let command = this
     let commandDetails = new Discord.MessageEmbed()
-      .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+      .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
       .setColor("#8074d2")
       .setDescription(`This is the ${command.name} feature documentation! You can create a new channel named: ***${command.name}*** and create a new emoji with the name: ***${command.featureSpecials.emojiName}***. React to a message with that emoji and then it will be saved to the new ***${command.name}*** channel! Just a small feature. Related to the **${command.featureSpecials.related[0]}** feature`)
       .setTitle(`Feature Name: ${command.name}`)

@@ -34,10 +34,10 @@ module.exports = {
     }
 
     if(args[1].includes('-')) {
-      return msg.channel.send(`You Can't pay negative Eris to a person. That would be mean.`)
+      return msg.channel.send(`You can't pay negative Eris to a person. That would be mean.`)
     }
 
-    if(member < 0) {
+    if(member <= 0) {
       return msg.channel.send(`You have 0 Eris, get some Eris with ${msg.prefix}work`)
     }
 
@@ -48,11 +48,11 @@ module.exports = {
     .setColor('#8074d2')
     .setTimestamp()
     .setDescription(`${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username} successfully paid ${typeof user.nickname == "string" ? user.nickname : user.user.username}`)
-    .addField(`${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\'s Balance`, `${member - args[1]} Eris`)
-    .addField(`${typeof user.nickname == "string" ? user.nickname : user.user.username}\'s Balance`, `${target == null ? args[1] : target + Number(args[1])} Eris`)
+    .addField(`${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\'s Balance`, `${(member - args[1]).toFixed(0)} Eris`)
+    .addField(`${typeof user.nickname == "string" ? user.nickname : user.user.username}\'s Balance`, `${target == null ? args[1].toFixed(0) : (target + Number(args[1])).toFixed(0)} Eris`)
     msg.channel.send(payEmbed)
     db.add(`user_${msg.guild.id}_${user.id}.bal`, args[1])
     db.subtract(`user_${msg.guild.id}_${msg.member.id}.bal`, args[1])
-    fs.appendFileSync('./transfer_records.txt', `From: ${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\nTo: ${typeof user.nickname == "string" ? user.nickname : user.user.username}\nAmount: ${args[1]}\nReason: ${reason}\nTimestamp: ${Date.now()}\nReadable Date: ${new Date().toDateString()}\nFull Date: ${new Date().toString()}\nGuild ID: ${msg.guild.id}\nGuild Name: ${msg.guild.name}\n\n`)
+    fs.appendFileSync('./transfer_records.txt', `From: ${typeof msg.member.nickname == "string" ? msg.member.nickname : msg.member.user.username}\nTo: ${typeof user.nickname == "string" ? user.nickname : user.user.username}\nAmount: ${args[1].toFixed(0)}\nReason: ${reason}\nTimestamp: ${Date.now()}\nReadable Date: ${new Date().toDateString()}\nFull Date: ${new Date().toString()}\nGuild ID: ${msg.guild.id}\nGuild Name: ${msg.guild.name}\n\n`)
   }
 }

@@ -6,6 +6,7 @@ module.exports = {
   execute(client, msg, args) {
     if(args[0] == null) return
 		if(isNaN(Number(args[0]))) return
+    if(Number(args[0]) > 100) return msg.channel.send(`Discord limits purging to 100 messages`)
 		msg.delete().then(msg => {
 			msg.channel.bulkDelete(args[0]).then(msgs => {
 				let msg = msgs.first()

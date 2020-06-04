@@ -16,7 +16,7 @@ module.exports = {
 	            msg.channel.send(`Successfully kicked ${user.tag}`);
 	          })
 	          .catch(err => {
-	            msg.channel.send('I was unable to kick the member');
+	            msg.channel.send('I was unable to kick the member. Check my permissions?');
 	            console.error(err);
 	          });
 	      } else {

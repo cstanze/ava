@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const db = require('quick.db')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 
 module.exports = {
   name: 'prefix',
@@ -26,7 +25,7 @@ module.exports = {
       { name: 'Guild Prefix', value: `${currentPrefix == null ? `There is no guild prefix set for ${msg.guild.name}.\n You can use the global prefix or set one using \`a!prefix <new prefix>\`` : currentPrefix}`, inline: false },
       { name: 'Global Prefix', value: 'a!', inline: false }
     )
-    .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+    .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
     .setTimestamp()
     msg.channel.send(prefixEmbed)
   }

@@ -1,5 +1,4 @@
 const randomPuppy = require('random-puppy')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const chalk = require('chalk')

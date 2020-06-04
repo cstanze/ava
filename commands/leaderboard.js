@@ -1,7 +1,6 @@
 const db = require('quick.db')
 const Discord = require('discord.js')
 const chalk = require('chalk')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 
 module.exports = {
   name: 'leaderboard',
@@ -14,13 +13,13 @@ module.exports = {
     let content = ""
     for(let i=0;i<(money.length < 10 ? money.length : 10);i++) {
       let user = await msg.guild.members.fetch(money[i].ID.split('_')[2])
-      content += `**${i+1}.**   ${typeof user.nickname == "string" ? user.nickname : user.user.username} ~\\~ ${money[i].data.bal} Eris\n`
+      content += `**${i+1}.**   ${typeof user.nickname == "string" ? user.nickname : user.user.username} ~\\~ ${money[i].data.bal.toFixed(0)} Eris\n`
     }
     const topEmbed = new Discord.MessageEmbed()
     .setAuthor(`${msg.guild.name} - Leaderboard`, msg.guild.iconURL({ size: 512, dynamic: true }))
     .setDescription(content == "" ? `Hmm... There seems to be no leaderboard stats for this guild.\nStart gaining Eris with ${msg.prefix}work or ${msg.prefix}daily` : content)
     .setColor('#8074d2')
-    .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+    .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
     .setTimestamp()
     msg.channel.send(topEmbed)
   }

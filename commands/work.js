@@ -21,7 +21,7 @@ module.exports = {
       return msg.channel.send(reply)
     }
     if(!workTypes.includes(args[0])) return msg.channel.send(`That's not a valid type of work. Please use: \`${msg.prefix}work list\` to list the professions of work.`)
-    let placeOfWork = typeof lastWorkedAt.type != 'undefined' ? companyFromProfession(lastWorkedAt.type) : companyFromProfession(args[0])
+    let placeOfWork = typeof lastWorkedAt != 'undefined' ? companyFromProfession(lastWorkedAt.type) : companyFromProfession(args[0])
     if(lastWorkedAt != null && timeout - (Date.now() - lastWorkedAt.time) > 0) {
       let time = ms(timeout - (Date.now() - lastWorkedAt.time))
       return msg.channel.send(`Your boss${placeOfWork == 'Messy Tech Inc.' ? ' \`Daydream\` ' : ' '}at \`${placeOfWork}\` decided you should relax before working again. You can come back to work in **${time}**`)

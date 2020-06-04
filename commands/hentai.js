@@ -1,5 +1,4 @@
 const akaneko = require('akaneko')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 
 module.exports = {
@@ -14,7 +13,7 @@ module.exports = {
   	 .setTitle("")
   	 .setImage(akaneko.nsfw.hentai())
   	 .setTimestamp()
-  	 .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+  	 .setFooter(client.randomNSFWFooters[Math.floor(Math.random() * client.randomNSFWFooters.length)], null)
   	msg.channel.send(hentaiEmbed)
   }
 }

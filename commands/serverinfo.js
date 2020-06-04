@@ -1,4 +1,3 @@
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 const Discord = require('discord.js')
 const moment = require('moment')
 require('moment-duration-format')
@@ -25,7 +24,7 @@ module.exports = {
 			)
 			.setThumbnail('https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
 			.setTimestamp()
-			.setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], 'https://cdn2.iconfinder.com/data/icons/nodejs-1/128/nodejs-128.png')
 		msg.channel.send(info)
   }
 }

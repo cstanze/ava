@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 
 module.exports = {
   name: 'settings',
@@ -46,7 +45,7 @@ module.exports = {
       msg.channel.send(`Settings value for \`${key}\`: \`${settings[key]}\`${isDefault}`)
     } else {
       let settingsDetails = new Discord.MessageEmbed()
-        .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)])
+        .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
         .setColor("#8074d2")
         .setTitle(`Settings for: ${msg.guild.name}`)
         .setAuthor(`${msg.guild.name}'s Settings`, msg.guild.iconURL({ size: 512, dynamic: true }))

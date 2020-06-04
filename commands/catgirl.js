@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const akaneko = require('akaneko')
-let randomFooters = ["Proudly created in nano", "Puppers!", ":O", "CPU Overheating...", "Quacc", "Welcome Cthulu!", "NYU Tisch", "Widen That Keyhole...", "01000110"]
 
 module.exports = {
   name: 'catgirl',
@@ -14,7 +13,7 @@ module.exports = {
     .setImage(akaneko.neko())
     .setTitle("")
     .setTimestamp()
-    .setFooter(randomFooters[Math.floor(Math.random() * randomFooters.length)], null)
+    .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
     msg.channel.send(nekoEmbed)
   }
 }

@@ -12,6 +12,6 @@ module.exports = {
     let money = await db.get(`user_${msg.guild.id}_${user.id}.bal`)
     if(money === null) money = 0;
 
-    msg.channel.send(`${typeof user.nickname == "string" ? user.nickname : user.user.username}, you have \`${money} Eris\``)
+    msg.channel.send(`${typeof user.nickname == "string" ? user.nickname : user.user.username}, you have \`${money.toFixed(0)} Eris\``)
   }
 }

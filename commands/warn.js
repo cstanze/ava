@@ -11,8 +11,9 @@ module.exports = {
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',
   async execute(client, msg, args) {
-    const warnings = await db.get(`user_${msg.guild.id}_${msg.author.id}.warnings`)
-    const target = msg.mentions.members.first() || args[0]
+    const target = msg.mentions.members.first()
+    if(target.id == msg.author.id) return msg.channel.send(`You can't warn yourself, silly billy!`)
+    const warnings = await db.get(`user_${msg.guild.id}_${target.user.id}.warnings`)
     args[1] = args.slice(1).join(' ')
     const reason = args[1] || "NXP"
     if(reason == "NXP") {
@@ -22,15 +23,21 @@ module.exports = {
       })
       return
     }
+    let words = reason.split(' ')
+    let tokens = []
+    for(const word of words) {
+      let token = client.replaceSpecials(word)
+      if(client.badTokens.includes(token.toLowerCase())) return msg.channel.send(`I guess we could warn this person but should I really warn them with that type of vulgar language?\nI won't do it if you don't change the reason to something..., well, reasonable.\nFlagged Word: **${token}**`)
+    }
     target.user.send(`You've been warned in: **${msg.guild.name}**.\nReason: ${reason}`)
       .then(() => {
         msg.channel.send(`I've warned **${target.nickname || target.user.username}** for ***${reason}***`)
       })
       .catch(err => {
-        console.error(`Could not send warn DM to ${msg.author.tag}.\n`, err)
+        console.error(`Could not send warn DM to ${target.user.tag}.\n`, err)
         msg.channel.send('It seems as though I couldn\'t DM the person to warn. They most likely have DMs disabled.')
       })
-    if(typeof warnings == 'undefined') return db.set(`user_${msg.guild.id}_${msg.author.id}.warnings`, [{ reason: reason }])
-    db.push(`user_${msg.guild.id}_${msg.author.id}.warnings`, { reason: reason })
+    if(typeof warnings == 'undefined') return db.set(`user_${msg.guild.id}_${target.user.id}.warnings`, [{ reason: reason }])
+    db.push(`user_${msg.guild.id}_${target.user.id}.warnings`, { reason: reason })
   }
 }
