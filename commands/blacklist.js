@@ -11,10 +11,13 @@ module.exports = {
   permissionsLevel: 'Secret Service',
   async execute(client, msg, args) {
     let blacklisted = await db.get(`blacklist`)
-    let filteredBlacklist = blacklisted.filter(o => o.userId == args[0])
-    if(typeof filteredBlacklist[0] != 'undefined') return msg.channel.send(`This person is already blacklisted!`)
+    let filteredBlacklist = blacklisted == null ? undefined : blacklisted.find(o => o.userId == args[0])
+    if(typeof filteredBlacklist != 'undefined') return msg.channel.send(`This person is already blacklisted!`)
     let user = await fetchUserWithId(client, args[0])
-    args[1] = args.join(' ').shift()
-    await db.push(`blacklist`, { username: user.username, userId: args[0], reason: args[1] || 'No Reason Provided' })
+    let userId = args[0]
+    args.shift()
+    args[1] = args.join(' ')
+    await db.push(`blacklist`, { username: user.username, userId, reason: args[1] || 'No Reason Provided' })
+    return msg.channel.send(`Successfully blacklisted ${user.username}`)
   }
 }

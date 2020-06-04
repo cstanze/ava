@@ -11,7 +11,7 @@ module.exports = {
     if(target.id == client.id || target.user.bot) return msg.channel.send(`This is user is a bot!`)
     msg.channel.send(`Getting and organizing profile information for: \`${target.nickname || target.user.username}\`...`).then(async mxg => {
       try {
-        const ship = "No Ship Found"
+        const ship = await db.get(`user_${msg.guild.id}_${target.user.id}.ship`) || { nickname: 'No Ship Found' }
         const xp = await db.get(`user_${msg.guild.id}_${target.user.id}.xp`)
         const level = Math.floor(xp / 200)
         const eris = await db.get(`user_${msg.guild.id}_${target.user.id}.bal`).toFixed(0)
@@ -64,8 +64,8 @@ module.exports = {
         ctx.font = applyMedText(canvas, `${itemCount} items worth ${itemTotal} Eris.`, 80)
         ctx.fillText(`${itemCount} items worth ${itemTotal} Eris.`, canvas.width / 2.75 - inventoryWidth, canvas.height / 1.2)
         // Shipping
-        ctx.font = applyLargeText(canvas, `SHIP NAME: ${cutShip(ship)}`)
-        ctx.fillText(`SHIP NAME: ${cutShip(ship)}`, canvas.width / 2.75 - inventoryWidth, canvas.height / 1.05)
+        ctx.font = applyLargeText(canvas, `SHIP NAME: ${cutShip(ship.nickname)}`, 'Montserrat')
+        ctx.fillText(`SHIP NAME: ${cutShip(ship.nickname)}`, canvas.width / 2.75 - inventoryWidth, canvas.height / 1.05)
         // IMPORTANT: Avatar Clipping Should Be At The End...
         // Avatar Clipping
         ctx.beginPath()
@@ -118,11 +118,11 @@ const applyMedLargeText = (canvas, text, startingSize = 70) => {
   return ctx.font
 }
 
-const applyLargeText = (canvas, text, startingSize = 70) => {
+const applyLargeText = (canvas, text, startingSize = 70, font = 'Discord') => {
   const ctx = canvas.getContext('2d')
   let fontSize = startingSize
   do {
-    ctx.font = `${fontSize -= 10}px "Discord"`
+    ctx.font = `${fontSize -= 10}px "${font}"`
   } while (ctx.measureText(text).width > canvas.width-135)
   return ctx.font
 }
@@ -141,5 +141,5 @@ const cutBio = (bio) => {
 }
 
 const cutShip = (bio, length = 30) => {
-  return bio.length > length ? bio : bio.substring(0, 24)+'...'
+  return bio.length < length ? bio : bio.substring(0, length)+'...'
 }

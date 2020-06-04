@@ -195,10 +195,13 @@ process.on('uncaughtException', (err) => {
 // MARK: Messages
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
-	// if(msg.author.id == '364891173858312192') msg.react('🐧')
-	if(msg.content.includes(client.token)) msg.edit(client.clean(client, msg.content))
-	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
-	if(!msg.author.bot && !msg.webhookID && msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
+	if(msg.author.bot || msg.webhookID) return;
+	let blacklisted = await db.get(`blacklist`)
+	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
+	if(typeof blacklistStatus != 'undefined') return
+	if(msg.content.includes(client.token)) msg.delete()
+	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
+	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
 	let prefix = globalPrefix
 	if(!msg.content.startsWith(globalPrefix)) {
 		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
