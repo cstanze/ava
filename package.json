@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node shard.js"
   },
+  "engines": {
+    "node": "14.2.x"
+  },
   "keywords": [],
   "author": "Daydream",
   "license": "ISC",
