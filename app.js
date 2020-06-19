@@ -42,6 +42,13 @@ const globalPrefix = 'a!'
 require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
+	setTimeout(() => {
+		const avatarFiles = fs.readdirSync('./avatars').filter(file => file.endsWith('.jpg'))
+		if(avatarFiles.length) return
+		console.log(chalk.blue('[Ava] [Meta]'), chalk.yellow(`[Avatar] [Prep]`), `Preparing a total of ${avatarFiles.length} avatars`)
+		const avatarFile = avatarFiles.random()
+		client.user.setAvatar(`./avatars/${avatarFile}`)
+	}, 300000);
 	// Production Only
 	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
 	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
