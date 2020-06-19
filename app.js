@@ -42,7 +42,7 @@ const globalPrefix = 'a!'
 require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
-	setTimeout(() => {
+	setInterval(() => {
 		const avatarFiles = fs.readdirSync('./avatars').filter(file => file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))
 		if(avatarFiles.length) return
 		console.log(chalk.blue('[Ava] [Meta]'), chalk.yellow(`[Avatar] [Prep]`), `Preparing a total of ${avatarFiles.length} avatars`)
