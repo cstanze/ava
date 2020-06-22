@@ -38,7 +38,7 @@ module.exports = {
         .addField(`Titles`, `**Native:** ${anime.title.native}\n**Romaji:** ${anime.title.romaji}\n**English:** ${anime.title.english}`)
         .setFooter(
           `Requested by: ${mxg.author.tag} | Provided by: anilist.co`,
-          msg.author.avatarURL({ format: 'png' })
+          mxg.author.avatarURL({ format: 'png' })
         )
         .setTimestamp()
       mxg.channel.send(animeEmbed)
