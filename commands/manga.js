@@ -12,7 +12,7 @@ module.exports = {
   type: 'Search',
   async execute(client, msg, args) {
     args[0] = args.join(' ')
-    msg.channel.send(`:compass: Searching for manga with name: \`${args[0]}\`.`).then(async msg => {
+    msg.channel.send(`:compass: Searching for manga with name: \`${args[0]}\`.`).then(async mxg => {
       const search = await anilist.search('manga', args[0])
       if(typeof search.media[0] == 'undefined') return msg.edit(`Couldn't find the manga: \`${args[0]}\``)
       const anime = await anilist.media.manga(search.media[0].id)
@@ -36,11 +36,11 @@ module.exports = {
         .addField('Tags', tags.join(', '))
         .addField(`Titles`, `**Native:** ${anime.title.native}\n**Romaji:** ${anime.title.romaji}\n**English:** ${anime.title.english}`)
         .setFooter(
-          `Requested by: ${msg.author.tag} | Provided by: anilist.co`,
+          `Requested by: ${mxg.author.tag} | Provided by: anilist.co`,
           msg.author.avatarURL({ format: 'png' })
         )
         .setTimestamp()
-      msg.channel.send(animeEmbed)
+      mxg.channel.send(animeEmbed)
       return msg.delete()
     })
   }
