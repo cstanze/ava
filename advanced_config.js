@@ -16,7 +16,8 @@ const config = {
     "welcomeChannel": 'welcome',
     "welcomeMessage": "Say hello to {{user}}, everyone! Lets welcome our new member!",
     "welcomeEnabled": "false",
-    'no-xp-channel': 'spam'
+    'no-xp-channel': 'spam',
+    "logMessageEdits": "true",
   },
   permLevels: [
     // This is the lowest permission level, this is for non-roled users.

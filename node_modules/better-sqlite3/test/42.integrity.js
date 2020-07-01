@@ -1,4 +1,6 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
 const Database = require('../.');
 
 describe('integrity checks', function () {
@@ -165,8 +167,20 @@ describe('integrity checks', function () {
 		});
 	});
 
-	util.describeUnix('Database#loadExtension()', function () {
-		const filepath = require('path').join(__dirname, '../build/test_extension.node');
+	describe('Database#loadExtension()', function () {
+		let filepath;
+		before(function () {
+			const releaseFilepath = path.join(__dirname, '..', 'build', 'Release', 'test_extension.node');
+			const debugFilepath = path.join(__dirname, '..', 'build', 'Debug', 'test_extension.node');
+			try {
+				fs.accessSync(releaseFilepath);
+				filepath = releaseFilepath;
+			} catch (_) {
+				fs.accessSync(debugFilepath);
+				filepath = debugFilepath;
+			}
+		});
+
 		specify('while iterating (blocked)', function () {
 			whileIterating(this, blocked(() => this.db.loadExtension(filepath)));
 			normally(allowed(() => this.db.loadExtension(filepath)));

@@ -9,6 +9,17 @@ client.badTokens = ['retard', 'idiot', 'bitch', 'stupid', 'ass', 'asshat', 'dick
 const chalk = require('chalk')
 const fs = require('fs')
 const Enmap = require('enmap')
+const { Database } = require('./modules/Database.js')
+const { Client } = require('pg')
+const dbClient = new Client({
+	user: 'PostgreSQL',
+	host: 'localhost',
+	database: 'avadb',
+	password: 'root',
+	port: 5432
+});
+client.database = new Database(dbClient)
+dbClient.connect()
 client.logger = require('./modules/Logger')
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
@@ -42,13 +53,6 @@ const globalPrefix = 'a!'
 require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
-	setInterval(() => {
-		const avatarFiles = fs.readdirSync('./avatars').filter(file => file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))
-		if(avatarFiles.length) return
-		console.log(chalk.blue('[Ava] [Meta]'), chalk.yellow(`[Avatar] [Prep]`), `Preparing a total of ${avatarFiles.length} avatars`)
-		const avatarFile = avatarFiles.random()
-		client.user.setAvatar(`./avatars/${avatarFile}`)
-	}, 300000);
 	// Production Only
 	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
 	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
@@ -181,6 +185,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
 process.on('unhandledRejection', err => {
+	if(err.toString().includes("embed.fields[0].value: This field is required")) return
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
 	console.error(chalk.red('[Uncaught] Promise Rejection'), chalk.yellow('[Stack Trace]'), err.stack)
 })

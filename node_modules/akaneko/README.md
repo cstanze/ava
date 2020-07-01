@@ -68,6 +68,21 @@ maid | Sends a random imageURL from Discord for the tag: **maid**
 orgy | Sends a random imageURL for an orgy (groupy or whatever)
 panties | I mean... just why? You like underwear?
 
+## Wallpaper Function(s)
+Example:
+```javascript
+akaneko.nsfw.function() // NSFW Format
+akaneko.nsfw.mobileWallpapers() // NSFW Example
+```
+
+Function | Description
+---|---
+akaneko.mobileWallpapers() | Fetch a random SFW Wallpaper! (Mobile)
+akaneko.wallpapers() | Fetch a random SFW Wallpaper! (Desktop)
+akaneko.nsfw.mobileWallpapers() | Fetch a random NSFW Wallpaper! (Mobile)
+akaneko.nsfw.wallpapers() | Fetch a random NSFW Wallpaper! (Desktop)
+
+
 ## Discord Bot Example
 ```javascript
 const Discord = require('discord.js');

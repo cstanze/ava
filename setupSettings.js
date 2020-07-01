@@ -12,7 +12,8 @@ const defaultSettings = {
   "welcomeChannel": 'welcome',
   "welcomeMessage": "Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D",
   "welcomeEnabled": "false",
-  'no-xp-channel': 'spam'
+  'no-xp-channel': 'spam',
+  "logMessageEdits": "true"
 }
 
 init = async () => {

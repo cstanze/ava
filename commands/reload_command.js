@@ -11,7 +11,7 @@ module.exports = {
   aliases: ['rcommand'],
   permissionsLevel: 'Bot Admin',
   async execute(client, msg, args, con) {
-    if(!args.length) return msg.channel.send(`You did you pass any command to reload, ${msg.author}`)
+    if(!args.length) return msg.channel.send(`You didn't pass any command to reload, ${msg.author}`)
     msg.channel.send(`Reloading the following commands: \`${args.join(' ')}\``).then(async msg => {
       for(let i=0;i<args.length;i++) {
         const commandName = args[i].toLowerCase()

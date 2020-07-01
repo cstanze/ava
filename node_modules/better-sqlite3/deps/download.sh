@@ -18,12 +18,14 @@
 # 3. node-gyp links the two resulting binaries to generate better_sqlite3.node.
 # ===
 
-VERSION="3290000"
-YEAR="2019"
+VERSION="3310100"
+YEAR="2020"
 
 # TODO: SQLITE_ENABLE_GEOPOLY (determine if the emitted warnings are safe or not)
 
 DEFINES="
+SQLITE_DQS=0
+SQLITE_LIKE_DOESNT_MATCH_BLOBS
 SQLITE_THREADSAFE=0
 SQLITE_DEFAULT_MEMSTATUS=0
 SQLITE_OMIT_DEPRECATED

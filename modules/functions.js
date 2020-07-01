@@ -35,7 +35,8 @@ module.exports = client => {
     'welcomeChannel': 'welcome',
     'welcomeMessage': 'Say hello to {{user}}, everyone! Lets welcome our new member!',
     'welcomeEnabled': 'false',
-    'no-xp-channel': 'spam'
+    'no-xp-channel': 'spam',
+    "logMessageEdits": "true"
   }
   // getSettings merge the client defaults with the new guild settings.
   // guild settings in enmap should only have *unique* overrides that are different from the defaults.
