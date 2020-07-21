@@ -14,13 +14,19 @@ module.exports = {
       mxg.delete()
       for(const arg of args) {
         for(const ev of eventFiles) {
-          const evName = ev.split('.')[0]
-          if(evName.toLowerCase() == arg.toLowerCase()) {
-            delete require.cache[require.resolve(`../events/${ev}`)]
-            const evx = require(`../events/${ev}`)
-            client.on(evName, evx.bind(null, client))
-            mxg.channel.send(`Event \`${evName}\` was reloaded`)
-            console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event]`), chalk.white(`[Reload]`), chalk.green(`[Success]`), evName)
+          try {
+            const evName = ev.split('.')[0]
+            if(evName.toLowerCase() == arg.toLowerCase()) {
+              delete require.cache[require.resolve(`../events/${ev}`)]
+              const evx = require(`../events/${ev}`)
+              client.on(evName, evx.bind(null, client))
+              mxg.channel.send(`Event \`${evName}\` was reloaded`)
+              console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event]`), chalk.white(`[Reload]`), chalk.green(`[Success]`), evName)
+            }
+          } catch (e) {
+            console.log(e)
+            msg.channel.send(`Error while reloading \`${ev.split('.')[0]}\`:`)
+            msg.channel.send(`\`\`\`\n${e.toString()}\`\`\``)
           }
         }
       }

@@ -20,7 +20,7 @@ module.exports = {
       }
       let finalMsg = ""
       for(let [key, value] of Object.entries(filteredByType)) {
-        if(key == 'Private') continue
+        if(key == 'Private' && msg.member.user.permLevel >= 9) continue
         finalMsg += `${emojiForKey(key)} **${key}**\n\`\`\`${value.replace("undefined", "").trim().slice(0, -1)}\`\`\`\n`
       }
       return msg.author.send(data)
@@ -45,9 +45,8 @@ module.exports = {
       .setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
       .setColor("#8074d2")
       .setTitle(`Details for: ${command.name}`)
-      .attachFiles(['./AvaIcon.jpg'])
-      .setThumbnail('attachment://AvaIcon.jpg')
-      .setAuthor(`Ava Command Details`, 'attachment://AvaIcon.jpg')
+      .setThumbnail(client.user.avatarURL({ size: 512, dynamic: true, format: "png" }))
+      .setAuthor(`Ava Command Details`, client.user.avatarURL({ size: 128, dynamic: true, format: "png" }))
       .setTimestamp()
       .addFields(
         { name: 'Aliases', value: `${typeof command.aliases == "undefined" ? 'None' : command.aliases.join(", ")}`, inline: true },

@@ -13,7 +13,7 @@ module.exports = {
 			return
 		}
     chan.createWebhook(`${msg.member.nickname ? msg.member.nickname : msg.author.username}`, { avatar: msg.member.user.avatarURL({ size: 512, dynamic: true }) }).then(async wh => {
-      await wh.send(args.join(" ").replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0'))
+      await wh.send(args.join(" ").replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace('https://', 'https:/').replace('http://', 'http:/'))
       wh.delete()
     })
   }

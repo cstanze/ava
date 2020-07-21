@@ -15,11 +15,10 @@ module.exports = {
     let changelog = new Discord.MessageEmbed()
 			.setColor('#0099ff')
 			.setTitle('Changelog')
-			.attachFiles(['./AvaIcon.jpg'])
-			.setAuthor(`Ava ${versionString} ${channelName}`, 'attachment://AvaIcon.jpg')
+			.setAuthor(`Ava ${versionString} ${channelName}`, client.user.avatarURL({ size: 128, dynamic: true, format: "png" }))
 			//.setAuthor(msg.member.user.username, msg.member.user.avatarURL({ size: "128", dynamic: true, format: "png" }))
 			.setDescription(`Current Ava Version: ${versionString} ${channelName}`)
-			.setThumbnail('attachment://AvaIcon.jpg')
+			.setThumbnail(client.user.avatarURL({ size: 512, dynamic: true, format: "png" }))
 			.setTimestamp()
 			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
     changes.forEach(change => {

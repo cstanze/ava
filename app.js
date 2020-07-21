@@ -1,9 +1,17 @@
+/**
+ * TODO          REFERENCES
+ * VC bot        Yggdrasil
+ * HQ Hentai     Marriage Bot
+ * Channel Nuke  Yui
+ * Dev Utils     Dyno/Mee6
+ **/
+
 const Discord = require('discord.js')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
 const { attachmentIsImage } = require('./helpers/attachments.js')
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
-client.randomFooters = ['Proudly created in nano', 'Puppers!', ':O', 'CPU Overheating...', 'Quacc', 'Welcome Cthulu!', 'Widen That Keyhole...', '01000110', 'Schrodinger\'s Trap', 'Arrest Him!', 'ANARCHY', 'Made In Canada', 'I used to be called Anarchy Angola.', 'My flag is two colors and a leaf', 'bruh', 'Who the fuck put my cat on the z-axis', 'upset', 'I\'m 5 years old', 'OwO Whats This?', 'Lolicon', 'NEET', 'Shut-In NEET', 'Kazuma and Megumin', 'Cat On Z Axis', 'Clean up on aisle 5', 'Wifi Slow', 'YooHoon', 'm-minecwaft uwu!', '>w<', 'Senko-san']
+client.randomFooters = ['Proudly created in nano', 'Puppers!', ':O', 'CPU Overheating...', 'Quacc', 'Welcome Cthulu!', 'Widen That Keyhole...', '01000110', 'Schrodinger\'s Trap', 'Arrest Him!', 'ANARCHY', 'Made In Canada', 'I used to be called Anarchy Angola.', 'My flag is two colors and a leaf', 'bruh', 'Who the fuck put my cat on the z-axis', 'upset', 'I\'m 5 years old', 'OwO Whats This?', 'Lolicon', 'NEET', 'Shut-In NEET', 'Kazuma and Megumin', 'Cat On Z Axis', 'Clean up on aisle 5', 'Wifi Slow', 'YooHoon', 'm-minecwaft uwu!', '>w<', 'Senko-san', 'Fax it over to you', 'Fax it under you', 'Fax it into you', 'Fax it over you', 'at least aim it', 'he\'s lost his right to a window', 'nice job oscar', 'if the soil starts to get acidic, you went too far', 'its just a garden party', 'you dont need a reason', 'yes, darryl?', 'dont be offensive', 'dont be cliche', 'dont take the first two rules too seriously', 'this is ridiculous', 'every. single. day.', 'it\'s all toby\'s fault.', 'im a lucky turkey', 'who cares what erin\'s feeling', 'bob vance, vance refrigeration', 'creepypasta', 'that\'s what everyone sees. thats the man in black', 'i saw a ghost', 'i dont know what to tell you jim, but i saw a ghost']
 client.randomNSFWFooters = ['Fill Me Senpai', 'He is my senpai', 'OwO Nice Stuff Senpai', 'owo nice shtuff shenpai', 'f-fiww me with youw cweamy eshense uwu', 'ara ara~', '~ara ara ara ara~!', 'nya~', 'nya!']
 client.badTokens = ['retard', 'idiot', 'bitch', 'stupid', 'ass', 'asshat', 'dick', 'dickhead', 'shit', 'piss', 'pissoff', 'asshole', 'bastard', 'cunt', 'bollocks', 'bugger', 'hell', 'choad', 'crikey', 'rubbish', 'trash', 'shag', 'wanker', 'wank', 'twat']
 const chalk = require('chalk')
@@ -12,7 +20,7 @@ const Enmap = require('enmap')
 const { Database } = require('./modules/Database.js')
 const { Client } = require('pg')
 const dbClient = new Client({
-	user: 'PostgreSQL',
+	user: 'postgres',
 	host: 'localhost',
 	database: 'avadb',
 	password: 'root',
@@ -58,130 +66,12 @@ client.once('ready', async () => {
 	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
 	client.user.setPresence({
 		activity: {
-      name: 'a!help for help.',
+      name: 'helping those in need || a!help',
       type: 'PLAYING',
   	},
     status: 'online',
   })
 });
-
-client.on('messageReactionAdd', async (reaction, user) => {
-	if (reaction.partial) {
-		try {
-			await reaction.fetch()
-		} catch (err) {
-			console.log('Something Went Wrong: ', err);
-			return
-		}
-	}
-	if(reaction.message.channel.type != "text") return
-	if((reaction.count >= 3) && (reaction.count <= 3)) {
-		if(reaction.emoji.name == '👏' || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
-			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "honorable-mentions")
-			if(!starboard) return
-			let msg = reaction.message
-			let hasAttachment = false
-			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
-      let isSpoiler = false
-      let attachment = hasAttachment ? msg.attachments.first() : null
-			if(hasAttachment) isSpoiler = attachment.spoiler
-	    if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
-			let reactionClient = reaction.message.member.user
-			let starredEmbed = new Discord.MessageEmbed()
-			.setColor('#14c49e')
-			.setDescription(reaction.message.content)
-			.addField('Original', `[Jump!](${reaction.message.url})`)
-			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-			.setTimestamp()
-			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
-			starboard.send(`:clap: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-			if(hasAttachment) {
-				if(attachmentIsImage(attachment)) {
-					if(isSpoiler) {
-						starredEmbed.attachFiles(['./images/spoiler.png'])
-						.setImage('attachment://spoiler.png')
-					} else {
-						starredEmbed.setImage(attachment.url)
-					}
-				}
-				starboard.send(attachment.url)
-			}
-			starboard.send(starredEmbed)
-		}
-	} else if(!(reaction.count > 1)) {
-		if(reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
-			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
-			if(!starboard) return
-			let msg = reaction.message
-			let hasAttachment = false
-			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
-      let isSpoiler = false
-      let attachment = hasAttachment ? msg.attachments.first() : null
-			if(hasAttachment) isSpoiler = attachment.spoiler
-	    if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
-			let reactionClient = reaction.message.member.user
-			let starredEmbed = new Discord.MessageEmbed()
-			.setColor('#14c49e')
-			.setDescription(reaction.message.content)
-			.addField('Original', `[Jump!](${reaction.message.url})`)
-			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-			.setTimestamp()
-			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
-			if(hasAttachment) {
-				if(attachmentIsImage(attachment)) {
-					if(isSpoiler) {
-						starredEmbed.attachFiles(['./images/spoiler.png'])
-						.setImage('attachment://spoiler.png')
-					} else {
-						starredEmbed.setImage(attachment.url)
-					}
-				} else {
-					starredEmbed.addFields(
-						{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
-					)
-				}
-			}
-			starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-			starboard.send(starredEmbed)
-		} else if(reaction.emoji.name == "sin") {
-			let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == "hall-of-sin")
-			if(!sinboard) {
-				return;
-			}
-			let msg = reaction.message
-			let hasAttachment = false
-			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
-			let isSpoiler = false
-			let attachment = hasAttachment ? msg.attachments.first() : null
-			if(hasAttachment) isSpoiler = attachment.spoiler
-			if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
-			let reactionClient = reaction.message.member.user
-			let sinnedEmbed = new Discord.MessageEmbed()
-			.setColor('#14c49e')
-			.setDescription(reaction.message.content)
-			.addField('Original', `[Jump!](${reaction.message.url})`)
-			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
-			.setTimestamp()
-			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
-			if(hasAttachment) {
-				if(attachmentIsImage(attachment)) {
-					if(sinboard.nsfw) {
-						sinnedEmbed.attachFiles(['./images/spoiler.png'])
-						.setImage('attachment://spoiler.png')
-					} else {
-						sinnedEmbed.setImage(attachment.url)
-					}
-				} else {
-					sinnedEmbed.addFields(
-						{ name: 'Extra', value: 'This messages appears to have an attachment other than an image or gif. It might be a video.', inline: false }
-					)
-				}
-			}
-			sinboard.send(`<:${reaction.emoji.name}:${reaction.emoji.id}> **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
-			sinboard.send(sinnedEmbed)
-		}
-	}
-})
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
 process.on('unhandledRejection', err => {
@@ -214,18 +104,27 @@ client.on('message', async msg => {
 	if(msg.content.includes(client.token)) msg.delete()
 	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
 	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
-	let prefix = globalPrefix
-	if(!msg.content.startsWith(globalPrefix)) {
-		const guildPrefix = await db.get(`prefix_${msg.guild.id}`)
-		if(msg.content.startsWith(guildPrefix)) prefix = guildPrefix
+  let prefix = globalPrefix
+	if(!msg.content.toLowerCase().startsWith(globalPrefix)) {
+		let guildPrefix = await client.database.selectFrom(`prefixes`, `WHERE guildid = '${msg.guild.id}'`)
+		guildPrefix = typeof guildPrefix.rows[0] == 'undefined' ? 'a!' : guildPrefix.rows[0].prefix
+		if(msg.content.toLowerCase().startsWith(guildPrefix)) prefix = guildPrefix
 	}
 	const mentionPrefix = new RegExp(`^<@!?${client.user.id}>( |)$`)
 	if(msg.content.match(mentionPrefix)) {
 		return msg.reply(`My global prefix is: \`${globalPrefix}\`. ${msg.member.hasPermission('MANAGE_GUILD') ? `You can use \`${globalPrefix}prefix <prefix>\` to change the prefix for this guild!` : `You can use \`${globalPrefix}prefix\` to find the prefix for this guild!`}`)
 	}
-	if(!msg.content.startsWith(prefix) || msg.author.bot || msg.webhookID) return;
-	let args = msg.content.slice(prefix.length).split(/\s+/)
-	let commandName = args.shift().toLowerCase()
+  let args = msg.content.slice(prefix.length).split(/\s+/)
+  let commandName = args.shift().toLowerCase()
+  //          5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
+  if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color') {
+    let hexes = msg.content.match(/#([0-9a-f]{3}){1,2}/gi)
+    let color = client.commands.get('color')
+    for(let hex of hexes) {
+      await color.execute(client, msg, [hex])
+    }
+  }
+	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
 	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 	if(!command) return;
@@ -246,8 +145,8 @@ client.on('message', async msg => {
 	}
 	timestamps.set(msg.author.id, now)
 	setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
-	const level = client.permLevel(msg)
 	const settings = msg.settings = client.getSettings(msg.guild)
+	const level = client.permLevel(msg)
 	if(level < client.levelCache[command.permissionsLevel || "User"]) {
 		if(settings.systemNotice == "true") {
 			return msg.channel.send(`You do not have the right permissions to use this command. Your permissions level is ${level} (${client.config.permLevels.find(l => l.level == level).name})\nThis command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
@@ -276,7 +175,6 @@ client.on('message', async msg => {
 		console.error(error)
 		msg.reply('there was an error trying to execute that command.')
 	}
-	db.set(`user_${msg.guild.id}_${msg.author.id}.lastCommand`, commandName)
 });
 
 client.login(config.token)

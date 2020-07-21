@@ -9,7 +9,7 @@ module.exports = {
   type: 'Utility',
   aliases: ['commandperms', 'permsfor'],
   async execute(client, msg, args, con) {
-    if(!args.length) return msg.channel.send(`You did you pass any command to get the permissions of, ${msg.author}`)
+    if(!args.length) return msg.channel.send(`${msg.author}, Your permissions level is: ${msg.author.permLevel} (${client.config.permLevels.find(l => l.level == msg.author.permLevel).name})`)
     msg.channel.send(`Finding permissions for: \`${args.join(' ')}\``).then(async msg => {
       for(let i=0;i<args.length;i++) {
         const commandName = args[i].toLowerCase()

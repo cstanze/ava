@@ -16,9 +16,8 @@ module.exports = {
       .setColor("#8074d2")
       .setDescription(`This is the ${command.name} feature documentation! You can create a new channel named: ***${command.name}*** and create a new emoji with the name: ***${command.featureSpecials.emojiName}***. React to a message with that emoji and then it will be saved to the new ***${command.name}*** channel! Just a small feature. Related to the **${command.featureSpecials.related[0]}** feature`)
       .setTitle(`Feature Name: ${command.name}`)
-      .attachFiles(['./AvaIcon.jpg'])
-      .setThumbnail('attachment://AvaIcon.jpg')
-      .setAuthor(`Ava Command Details`, 'attachment://AvaIcon.jpg')
+      .setThumbnail(client.user.avatarURL({ size: 512, dynamic: true, format: "png" }))
+      .setAuthor(`Ava Command Details`, client.user.avatarURL({ size: 128, dynamic: true, format: "png" }))
       .setTimestamp()
       .addFields(
         { name: 'Description', value: `${command.description}`, inline: false },

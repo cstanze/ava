@@ -32,7 +32,7 @@ const config = {
       name: 'Server Moderator',
       check: msg => {
         try {
-          const modRole = msg.guild.roles.find(r => r.name.toLowerCase() == msg.settings.modRole.toLowerCase())
+          const modRole = msg.guild.roles.cache.find(r => r.name.toLowerCase() == msg.settings.modRole.toLowerCase())
           if(modRole && msg.member.roles.cache.has(modRole.id)) return true
         } catch (e) {
           return false
@@ -86,7 +86,7 @@ const config = {
     {
       level: 10,
       name: 'Bot Owner',
-      check: msg => msg.client.config.ownerID == msg.author.id
+      check: msg => msg.client.config.ownerID.includes(msg.author.id)
     }
   ]
 }

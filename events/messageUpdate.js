@@ -4,7 +4,9 @@ const Discord = require('discord.js')
 module.exports = async (client, oldMessage, newMessage) => {
   try {
     if(oldMessage.channel.type != 'text') return
+    if(oldMessage.author.bot) return
     newMessage = await newMessage.channel.messages.fetch(newMessage.id)
+    if(oldMessage.content == newMessage.content) return
     const settings = client.getSettings(oldMessage.guild)
     const channel = await oldMessage.guild.channels.cache.find(c => c.name == settings.modLogChannel)
     const editEmbed = new Discord.MessageEmbed()

@@ -3,7 +3,7 @@ module.exports = client => {
     PERMISSION LEVEL FUNCTION
 
     This is a very basic permissions system for commands which uses "levels"
-    "spaces" are intentionally left black so you can add them if you want.
+    "spaces" are intentionally left blank so you can add them if you want.
     NEVER GIVE ANYONE BUT THE OWNER THE LEVEL 10! By default this can run any command
     including the VERY DANGEROUS `eval` and `exec` commands!
   */
@@ -12,7 +12,6 @@ module.exports = client => {
     const permOrder = client.config.permLevels.slice(0).sort((p, c) => p.level < c.level ? 1 : -1)
     while(permOrder.length) {
       const currentLevel = permOrder.shift()
-      if(msg.guild && currentLevel.guildOnly) continue
       if(currentLevel.check(msg)) {
         permlvl = currentLevel.level
         break

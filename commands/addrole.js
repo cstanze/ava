@@ -5,7 +5,7 @@ module.exports = {
   permissionsLevel: 'Server Moderator',
   execute(client, msg, args) {
     if(msg.member.hasPermission("MANAGE_ROLES") || msg.member.user.id == "334067823229796367") {
-			let role = msg.mentions.roles.array()[0]
+			let role = msg.mentions.roles.array()[0] || msg.guild.roles.cache.find(r => r.id == args[1])
 			let member = msg.mentions.members.array()[0]
 			if(!role) {
 				msg.channel.send("You need to mention a role!")

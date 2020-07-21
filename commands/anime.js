@@ -8,7 +8,7 @@ module.exports = {
   cooldown: 15,
   args: true,
   usage: '<anime name>',
-  example: 'Sewayaki Kitsune no Senko-san',
+  example: 'Kobayashi-san Chi no Maidragon',
   type: 'Search',
   async execute(client, msg, args) {
     args[0] = args.join(' ')
