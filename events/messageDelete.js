@@ -6,7 +6,8 @@ module.exports = async (client, message) => {
     if(message.channel.type != 'text') return
     if(message.author.bot) return
     const settings = client.getSettings(message.guild)
-    const channel = message.guild.channels.cache.find(c => c.name == settings.modLogChannel)
+    const channel = message.guild.channels.cache.find(c => c.name == settings.mdl)
+    console.log(channel)
     const deleteEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message sent by** <@${message.author.id}> **deleted in** <#${message.guild.channels.cache.find(c => c.name == message.channel.name).id}>\n${message.content}`)
       .setAuthor(message.author.tag, message.author.displayAvatarURL({ size: 512, dynamic: true }))
