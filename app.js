@@ -27,6 +27,7 @@ const dbClient = new Client({
 });
 client.database = new Database(dbClient)
 dbClient.connect()
+const longjohn = require('longjohn')
 client.logger = require('./modules/Logger')
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
@@ -95,14 +96,15 @@ process.on('uncaughtException', (err) => {
 
 // MARK: Messages
 client.on('message', async msg => {
+  if(msg.guild.name != 'Ivory Tower') return
 	if(msg.channel.type != "text") return;
 	if(msg.author.bot || msg.webhookID) return;
 	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
 	if(typeof blacklistStatus != 'undefined') return
 	if(msg.content.includes(client.token)) msg.delete()
-	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
-	if(msg.channel.name != await client.valueForSettingsKey(`no-xp-channel`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
+	if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
+	if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
   let prefix = globalPrefix
 	if(!msg.content.toLowerCase().startsWith(globalPrefix)) {
 		let guildPrefix = await client.database.selectFrom(`prefixes`, `WHERE guildid = '${msg.guild.id}'`)
@@ -176,4 +178,5 @@ client.on('message', async msg => {
 	}
 });
 
+longjohn.async_trace_limit = -1
 client.login(config.token)

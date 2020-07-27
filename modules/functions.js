@@ -1,3 +1,5 @@
+const chalk = require('chalk')
+
 module.exports = client => {
   /*
     PERMISSION LEVEL FUNCTION
@@ -39,12 +41,11 @@ module.exports = client => {
   }
   // getSettings merge the client defaults with the new guild settings.
   // guild settings in enmap should only have *unique* overrides that are different from the defaults.
-  client.getSettings = (guild) => {
-    client.settings.ensure('default', defaultSettings)
-    if(!guild) return client.settings.get('default')
-    const guildConf = client.settings.get(guild.id) || {}
-    // '...' is the spread operator. It's really awesome.
-    return ({...client.settings.get('default'), ...guildConf})
+  client.getSettings = async (guild) => {
+    const defaults = await client.database.selectFrom('guild', `WHERE guildid = 'default'`)
+    if(!guild || (typeof (await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)).rows[0]) == 'undefined') return defaults
+    const guildSettings = await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)
+    return guildSettings
   }
   /*
   GUILD SETTINGS QUICK GET FUNCTION
@@ -52,9 +53,9 @@ module.exports = client => {
   This function should perform a search for a client settings key.
   If it can't find a specified key, it returns the default value for that key.
   */
-  client.valueForSettingsKey = (key, guild) => {
+  client.valueForSettingsKey = async (key, guild) => {
     if(!key) throw new Error(`NoKey`)
-    const settings = client.getSettings(guild)
+    const settings = await client.getSettings(guild)
     return settings[key]
   }
   /*
