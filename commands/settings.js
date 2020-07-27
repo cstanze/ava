@@ -5,7 +5,7 @@ module.exports = {
   description: 'View or change settings for your server',
   type: 'Settings',
   permissionsLevel: 'Server Administrator',
-  aliases: ['set', 'configure'],
+  aliases: ['configure'],
   usage: '<get/edit/reset> <key> <value>',
   example: 'edit modrole Mods',
   async execute(client, msg, [action, key, ...value]) {

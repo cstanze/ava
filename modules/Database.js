@@ -1,3 +1,18 @@
+/*
+key | external
+-----------------
+mdl | modLogChanel
+mr  | modRole
+ar  | adminRole
+sn  | systemNotice
+wc  | welcomeChannel
+wm  | welcomeMessage
+we  | welcomeEnabled
+nxp | noXPChannel
+sc  | starboardChannel
+ssc | sinboardChannel
+*/
+
 class Database {
   constructor(client) {
     this.client = client;

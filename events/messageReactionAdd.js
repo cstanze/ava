@@ -1,3 +1,4 @@
+const { attachmentIsImage } = require('../helpers/attachments.js')
 const Discord = require('discord.js')
 // StarBoard, HonorBoard, SinBoard, etc.
 
@@ -11,7 +12,7 @@ module.exports = async (client, reaction, user) => {
 		}
 	}
 	if(reaction.message.channel.type != "text") return
-	if((reaction.count >= 3) && (reaction.count <= 3)) {
+	if(reaction.count == 3) {
 		if(reaction.emoji.name == '👏' || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
 			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "honorable-mentions")
 			if(!starboard) return
@@ -40,7 +41,8 @@ module.exports = async (client, reaction, user) => {
 						starredEmbed.setImage(attachment.url)
 					}
 				}
-				starboard.send(attachment.url)
+				// starboard.send(attachment.url)
+        starredEmbed.addField('Extra', 'This message may contain a video or file and I couldn\'t send it.')
 			}
 			starboard.send(starredEmbed)
 		}

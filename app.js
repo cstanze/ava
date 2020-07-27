@@ -1,6 +1,6 @@
 /**
  * TODO          REFERENCES
- * VC bot        Yggdrasil
+ * VC bot        VoiceMaster/Yggdrasil
  * HQ Hentai     Marriage Bot
  * Channel Nuke  Yui
  * Dev Utils     Dyno/Mee6
@@ -9,7 +9,6 @@
 const Discord = require('discord.js')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-const { attachmentIsImage } = require('./helpers/attachments.js')
 const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
 client.randomFooters = ['Proudly created in nano', 'Puppers!', ':O', 'CPU Overheating...', 'Quacc', 'Welcome Cthulu!', 'Widen That Keyhole...', '01000110', 'Schrodinger\'s Trap', 'Arrest Him!', 'ANARCHY', 'Made In Canada', 'I used to be called Anarchy Angola.', 'My flag is two colors and a leaf', 'bruh', 'Who the fuck put my cat on the z-axis', 'upset', 'I\'m 5 years old', 'OwO Whats This?', 'Lolicon', 'NEET', 'Shut-In NEET', 'Kazuma and Megumin', 'Cat On Z Axis', 'Clean up on aisle 5', 'Wifi Slow', 'YooHoon', 'm-minecwaft uwu!', '>w<', 'Senko-san', 'Fax it over to you', 'Fax it under you', 'Fax it into you', 'Fax it over you', 'at least aim it', 'he\'s lost his right to a window', 'nice job oscar', 'if the soil starts to get acidic, you went too far', 'its just a garden party', 'you dont need a reason', 'yes, darryl?', 'dont be offensive', 'dont be cliche', 'dont take the first two rules too seriously', 'this is ridiculous', 'every. single. day.', 'it\'s all toby\'s fault.', 'im a lucky turkey', 'who cares what erin\'s feeling', 'bob vance, vance refrigeration', 'creepypasta', 'that\'s what everyone sees. thats the man in black', 'i saw a ghost', 'i dont know what to tell you jim, but i saw a ghost']
 client.randomNSFWFooters = ['Fill Me Senpai', 'He is my senpai', 'OwO Nice Stuff Senpai', 'owo nice shtuff shenpai', 'f-fiww me with youw cweamy eshense uwu', 'ara ara~', '~ara ara ara ara~!', 'nya~', 'nya!']
@@ -98,7 +97,7 @@ process.on('uncaughtException', (err) => {
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
 	if(msg.author.bot || msg.webhookID) return;
-	let blacklisted = await db.get(`blacklist`)
+	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
 	if(typeof blacklistStatus != 'undefined') return
 	if(msg.content.includes(client.token)) msg.delete()
@@ -167,7 +166,7 @@ client.on('message', async msg => {
 			return msg.channel.send(reply)
 		}
 		if(command.nsfw && !msg.channel.nsfw) {
-			return msg.channel.send(`This is not an nsfw channel, therefore I can\'t send this in here!`)
+			if(!msg.channel.name.includes('nsfw')) return msg.channel.send(`This is not an nsfw channel, therefore I can\'t send this in here!`)
 		}
 		msg.prefix = prefix
 		await command.execute(client, msg, args)
