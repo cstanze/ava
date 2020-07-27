@@ -9,7 +9,7 @@
 const Discord = require('discord.js')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-const client = new Discord.Client({ partials: ['MESSAGE', 'REACTION'] });
+const client = new Discord.Client({ partials: ['REACTION'] });
 client.randomFooters = ['Proudly created in nano', 'Puppers!', ':O', 'CPU Overheating...', 'Quacc', 'Welcome Cthulu!', 'Widen That Keyhole...', '01000110', 'Schrodinger\'s Trap', 'Arrest Him!', 'ANARCHY', 'Made In Canada', 'I used to be called Anarchy Angola.', 'My flag is two colors and a leaf', 'bruh', 'Who the fuck put my cat on the z-axis', 'upset', 'I\'m 5 years old', 'OwO Whats This?', 'Lolicon', 'NEET', 'Shut-In NEET', 'Kazuma and Megumin', 'Cat On Z Axis', 'Clean up on aisle 5', 'Wifi Slow', 'YooHoon', 'm-minecwaft uwu!', '>w<', 'Senko-san', 'Fax it over to you', 'Fax it under you', 'Fax it into you', 'Fax it over you', 'at least aim it', 'he\'s lost his right to a window', 'nice job oscar', 'if the soil starts to get acidic, you went too far', 'its just a garden party', 'you dont need a reason', 'yes, darryl?', 'dont be offensive', 'dont be cliche', 'dont take the first two rules too seriously', 'this is ridiculous', 'every. single. day.', 'it\'s all toby\'s fault.', 'im a lucky turkey', 'who cares what erin\'s feeling', 'bob vance, vance refrigeration', 'creepypasta', 'that\'s what everyone sees. thats the man in black', 'i saw a ghost', 'i dont know what to tell you jim, but i saw a ghost']
 client.randomNSFWFooters = ['Fill Me Senpai', 'He is my senpai', 'OwO Nice Stuff Senpai', 'owo nice shtuff shenpai', 'f-fiww me with youw cweamy eshense uwu', 'ara ara~', '~ara ara ara ara~!', 'nya~', 'nya!']
 client.badTokens = ['retard', 'idiot', 'bitch', 'stupid', 'ass', 'asshat', 'dick', 'dickhead', 'shit', 'piss', 'pissoff', 'asshole', 'bastard', 'cunt', 'bollocks', 'bugger', 'hell', 'choad', 'crikey', 'rubbish', 'trash', 'shag', 'wanker', 'wank', 'twat']
@@ -178,5 +178,4 @@ client.on('message', async msg => {
 	}
 });
 
-longjohn.async_trace_limit = -1
 client.login(config.token)

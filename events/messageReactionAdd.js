@@ -11,7 +11,7 @@ module.exports = async (client, reaction, user) => {
 			return
 		}
 	}
-  const settings = await client.getSettings(reaction.guild.id)
+  const settings = await client.getSettings(reaction.message.guild.id)
 	if(reaction.message.channel.type != "text") return
 	if(reaction.count == 3) {
 		if(reaction.emoji.name == '👏' || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
