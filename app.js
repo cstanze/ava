@@ -20,8 +20,7 @@ const { Database } = require('./modules/Database.js')
 const { Client } = require('pg')
 const dbClient = new Client({
 	user: 'jdfgrvrzaweeqt',
-	host: 'postgres://jdfgrvrzaweeqt:5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a@ec2-54-234-44-238.compute-1.amazonaws.com:5432/d3lpu57elj1aqk
-',
+	host: 'postgres://jdfgrvrzaweeqt:5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a@ec2-54-234-44-238.compute-1.amazonaws.com:5432/d3lpu57elj1aqk',
 	database: 'd3lpu57elj1aqk',
 	password: '5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a',
 	port: 5432
