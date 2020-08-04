@@ -97,7 +97,7 @@ process.on('uncaughtException', (err) => {
 // MARK: Messages
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
-  if(msg.guild.name != 'Ivory Tower') return
+  // if(msg.guild.name != 'Ivory Tower') return
 	if(msg.author.bot || msg.webhookID) return;
 	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
