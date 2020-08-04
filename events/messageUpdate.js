@@ -7,8 +7,8 @@ module.exports = async (client, oldMessage, newMessage) => {
     if(oldMessage.author.bot) return
     newMessage = await newMessage.channel.messages.fetch(newMessage.id)
     if(oldMessage.content == newMessage.content) return
-    const settings = client.getSettings(oldMessage.guild)
-    const channel = oldMessage.guild.channels.cache.find(c => c.name == settings.modLogChannel)
+    const settings = await client.getSettings(oldMessage.guild)
+    const channel = oldMessage.guild.channels.cache.find(c => c.name == settings.mdl)
     const editEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message edited in** <#${oldMessage.guild.channels.cache.find(c => c.name == newMessage.channel.name).id}> [Jump to Message](${newMessage.url})`)
       .setAuthor(newMessage.author.tag, newMessage.author.displayAvatarURL({ size: 512, dynamic: true }))
@@ -19,6 +19,6 @@ module.exports = async (client, oldMessage, newMessage) => {
       .setColor('#2578d8')
     channel.send(editEmbed)
   } catch(e) {
-    return
+    return console.log(e)
   }
 }

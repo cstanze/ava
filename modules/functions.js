@@ -42,9 +42,9 @@ module.exports = client => {
   // getSettings merge the client defaults with the new guild settings.
   // guild settings in enmap should only have *unique* overrides that are different from the defaults.
   client.getSettings = async (guild) => {
-    const defaults = await client.database.selectFrom('guild', `WHERE guildid = 'default'`)
+    const defaults = (await client.database.selectFrom('guild', `WHERE guildid = 'default'`)).rows[0]
     if(!guild || (typeof (await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)).rows[0]) == 'undefined') return defaults
-    const guildSettings = await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)
+    const guildSettings = (await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)).rows[0]
     return guildSettings
   }
   /*

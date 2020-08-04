@@ -3,8 +3,8 @@ const Discord = require('discord.js')
 
 module.exports = async (client, emoji) => {
   try {
-    const settings = client.getSettings(emoji.guild)
-    const channel = await emoji.guild.channels.cache.find(c => c.name == settings.modLogChannel)
+    const settings = await client.getSettings(emoji.guild)
+    const channel = await emoji.guild.channels.cache.find(c => c.name == settings.mdl)
     const emojiEmbed = new Discord.MessageEmbed()
       .setDescription(emoji.animated ? `<a:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`)
       .setAuthor(`${emoji.guild.name} - Emoji Create`, emoji.guild.iconURL({ size: 512, dynamic: true }))
@@ -13,6 +13,6 @@ module.exports = async (client, emoji) => {
       .setColor('#2578d8')
     channel.send(emojiEmbed)
   } catch(e) {
-    return
+    return console.log(e)
   }
 }

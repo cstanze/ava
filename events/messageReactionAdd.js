@@ -11,6 +11,7 @@ module.exports = async (client, reaction, user) => {
 			return
 		}
 	}
+  const settings = await client.getSettings(reaction.message.guild.id)
 	if(reaction.message.channel.type != "text") return
 	if(reaction.count == 3) {
 		if(reaction.emoji.name == '👏' || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}") {
@@ -48,7 +49,7 @@ module.exports = async (client, reaction, user) => {
 		}
 	} else if(!(reaction.count > 1)) {
 		if(reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}" || reaction.emoji.name == "star") {
-			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "starboard")
+			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == settings.sc)
 			if(!starboard) return
 			let msg = reaction.message
 			let hasAttachment = false
@@ -82,7 +83,7 @@ module.exports = async (client, reaction, user) => {
 			starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
 			starboard.send(starredEmbed)
 		} else if(reaction.emoji.name == "sin") {
-			let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == "hall-of-sin")
+			let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == settings.ssc)
 			if(!sinboard) {
 				return;
 			}
