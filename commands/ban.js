@@ -5,8 +5,9 @@ module.exports = {
   permissionsLevel: 'Server Moderator',
   example: '@User',
   execute(client, msg, args) {
-    let member = msg.mentions.members.first()
-    if(!member) return msg.channel.send(`You didn't mention a user to ban!`)
+    let members = msg.mentions.members.array()
+    for(let member of members) {
+	    if(!member) return msg.channel.send(`You didn't mention a user to ban!`)
 		if(member.user === client.user) {
 			msg.channel.send("I can\'t ban myself, silly!")
 			return;
@@ -26,5 +27,6 @@ module.exports = {
 		} else {
 			msg.channel.send("*Insufficient Permissions*")
 		}
+    }
   }
 }
