@@ -19,7 +19,7 @@ module.exports = {
       if(typeof await db.get(`user_${msg.guild.id}_${msg.author.id}.ship`) != 'undefined' || await db.get(`user_${msg.guild.id}_${msg.author.id}.ship`) == null) {
         if(typeof await db.get(`user_${msg.guild.id}_${msg.author.id}.ship.so`) != 'undefined') return msg.channel.send(`:x: You are already shipped with someone else!`)
       }
-      if(typeof await db.get(`user_${msg.guild.id}_${target.user.id}.ship`) != 'undefined' || await db.get(`user_${msg.guild.id}_${target.author.id}.ship`) == null) {
+      if(typeof await db.get(`user_${msg.guild.id}_${target.user.id}.ship`) != 'undefined' || await db.get(`user_${msg.guild.id}_${target.user.id}.ship`) == null) {
         if(typeof await db.get(`user_${msg.guild.id}_${target.user.id}.ship.so`) != 'undefined') return msg.channel.send(`:x: ${target.displayName} is already shipped with someone else!`)
       }
       const shipname = `${firstHalf(msg.member.displayName)}${secondHalf(target.displayName)}`
