@@ -1,6 +1,6 @@
 const config = {
-  // Bot Owner ID, useful for the new internal permissions system. Should always be a level 10 permission level.
-  "ownerID": ['334067823229796367', '391878815263096833', '135124731476049920'],
+  // Bot Owner IDs, useful for the new internal permissions system. Should always be a level 10 permission level.
+  "ownerID": ['334067823229796367', '391878815263096833', '135124731476049920', '674271647162695701'],
   // Bot Admins, Moves away from the db storage of bot admins but a newer storage of bot admins in an array. Level 9 permission level.
   "admins": ['311947658531176451', '647114683626553344', '291247055496675338', '308375852167725056'],
   // Bot support, level 8 permission level, still a large amount of commands at your disposal.
