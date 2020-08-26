@@ -48,7 +48,7 @@ module.exports = async (client, reaction, user) => {
 			starboard.send(starredEmbed)
 		}
 	} else if(!(reaction.count > 1)) {
-		if(reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}" || reaction.emoji.name == "star") {
+		if((reaction.emoji.name == '🎬' && client.config.ownerID.includes(user.id)) || reaction.emoji.name == '\u{2b50}' || reaction.emoji.name == "\u{1f31f}" || reaction.emoji.name == "\u{1f929}" || reaction.emoji.name == "star") {
 			let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == settings.sc)
 			if(!starboard) return
 			let msg = reaction.message
@@ -82,6 +82,39 @@ module.exports = async (client, reaction, user) => {
 			}
 			starboard.send(`:star: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
 			starboard.send(starredEmbed)
+			if((reaction.emoji.name == '🎬' && client.config.ownerID.includes(user.id))) {
+				let starboard = reaction.message.guild.channels.cache.find(channel => channel.name == "honorable-mentions")
+			if(!starboard) return
+			let msg = reaction.message
+			let hasAttachment = false
+			if(typeof msg.attachments.array()[0] != "undefined") hasAttachment = true
+      let isSpoiler = false
+      let attachment = hasAttachment ? msg.attachments.first() : null
+			if(hasAttachment) isSpoiler = attachment.spoiler
+	    if(hasAttachment && reaction.message.channel.nsfw) isSpoiler = true
+			let reactionClient = reaction.message.member.user
+			let starredEmbed = new Discord.MessageEmbed()
+			.setColor('#14c49e')
+			.setDescription(reaction.message.content)
+			.addField('Original', `[Jump!](${reaction.message.url})`)
+			.setAuthor(reactionClient.username, reactionClient.avatarURL({ size: 128, dynamic: true }), null)
+			.setTimestamp()
+			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
+			starboard.send(`:clap: **${reaction.count}** <#${reaction.message.channel.id}> ID: ${reaction.message.id}`)
+			if(hasAttachment) {
+				if(attachmentIsImage(attachment)) {
+					if(isSpoiler) {
+						starredEmbed.attachFiles(['./images/spoiler.png'])
+						.setImage('attachment://spoiler.png')
+					} else {
+						starredEmbed.setImage(attachment.url)
+					}
+				}
+				// starboard.send(attachment.url)
+        starredEmbed.addField('Extra', 'This message may contain a video or file and I couldn\'t send it.')
+			}
+			starboard.send(starredEmbed)
+			}
 		} else if(reaction.emoji.name == "sin") {
 			let sinboard = reaction.message.guild.channels.cache.find(channel => channel.name == settings.ssc)
 			if(!sinboard) {
