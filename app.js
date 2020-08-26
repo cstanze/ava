@@ -7,6 +7,7 @@
  **/
 
 const Discord = require('discord.js')
+const fetch = require('node-fetch')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
 const client = new Discord.Client({ partials: ['REACTION'] });
