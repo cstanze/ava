@@ -34,17 +34,25 @@ client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command] [Load]`), `Loading a total of ${commandFiles.length} commands`)
 for(const file of commandFiles) {
-	const command = require(`./commands/${file}`)
-	console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Loading]`), `Loading command with name: ${command.name}`)
-	client.commands.set(command.name, command)
+	try{
+		const command = require(`./commands/${file}`)
+		console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Loading]`), `Loading command with name: ${command.name}`)
+		client.commands.set(command.name, command)
+	} catch(e) {
+		console.error(`Error while loading command: ${file.split('.')[0]}`, e)
+	}
 }
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
 console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event] [Load]`), `Loading a total of ${eventFiles.length} events`)
 for(const ev of eventFiles) {
 	const eventName = ev.split('.')[0]
-	console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Loading]`), `Loading event with name: ${eventName}`)
-	const evx = require(`./events/${ev}`)
-	client.on(eventName, evx.bind(null, client))
+	try {
+		console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Loading]`), `Loading event with name: ${eventName}`)
+		const evx = require(`./events/${ev}`)
+		client.on(eventName, evx.bind(null, client))
+	} catch(e) {
+		console.log(`Error while loading event: ${eventName}`, e)
+	}
 }
 client.config = require('./advanced_config.js')
 // Generate a cache of client permissions for pretty perm names in commands
