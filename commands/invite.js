@@ -12,7 +12,7 @@ module.exports = {
 											.setThumbnail(client.user.avatarURL({ dynamic: true, format: 'png' }))
 											.setAuthor(msg.guild.name, msg.guild.iconURL({ dynamic: true, format: 'png' }))
 											.setFooter(msg.author.tag, msg.author.avatarURL({ dynamic: true, format: 'png' }))
-											.setTimestamp())
+											.setTimestamp()
 			).then(_ => {
 				msg.channel.send(`<@!${msg.author.id}>, I've sent a DM!`)
 			}).catch(_ => {
