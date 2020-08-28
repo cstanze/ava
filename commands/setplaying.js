@@ -5,7 +5,7 @@ module.exports = {
   description: 'Set Playing Status of Ava',
   type: 'Private',
   aliases: ['setstatus'],
-  usage: '<status> <activity_type> <activity_name> <activity_url>'
+  usage: '<status> <activity_type> <activity_name> <activity_url>',
   execute(client, msg, args) {
     const allowedStatuses = ['online', 'idle', 'invisible', 'dnd', 'offline']
     if(allowedStatuses.includes(args[0]))
