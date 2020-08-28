@@ -7,12 +7,13 @@ module.exports = {
   aliases: ['setstatus'],
   usage: '<status> <activity_type> <activity_url> <activity_name>',
   example: 'online streaming https://twitch.tv/julztdg cod mobile',
+  args: true,
   async execute(client, msg, args) {
     const allowedStatuses = ['online', 'idle', 'invisible', 'dnd', 'offline']
     if(!allowedStatuses.includes(args[0])) return
     const allowedTypes = ['LISTENING', 'STREAMING', 'PLAYING', 'WATCHING']
     if(!allowedTypes.includes(args[1].toUpperCase())) return
-    let xrgs = msg.content.slice(prefix.length).split(/\s+/)
+    let xrgs = msg.content.slice(msg.prefix.length).split(/\s+/)
     xrgs.shift()
     xrgs.shift()
     xrgs.shift()
