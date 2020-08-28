@@ -40,7 +40,7 @@ module.exports = {
 
     if(!command) {
       let commandFilesTMP = fs.readdirSync('.')
-      let commandFiles
+      let commandFiles = []
       commandFilesTMP.forEach(f => {
         commandFiles.push(f.split('.')[0])
       })
