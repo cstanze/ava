@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const fs = require('fs')
 
 module.exports = {
   name: 'commands',
@@ -38,6 +39,12 @@ module.exports = {
     const command = client.commands.get(name) || client.commands.find(c => c.aliases && c.aliases.includes(name))
 
     if(!command) {
+      let commandFilesTMP = fs.readdirSync('.')
+      let commandFiles
+      commandFilesTMP.forEach(f => {
+        commandFiles.push(f.split('.')[0])
+      })
+      if(commandFiles.includes(name) && msg.author.permLevel == 10) return msg.channel.send(`This command wasn't loaded due to an error. Try reloading the command and checking logs for more info.`)
       return msg.reply(`Hmm... \`${name}\` doesn't seem to be a valid command.`)
     }
     let commandDetails = new Discord.MessageEmbed()
