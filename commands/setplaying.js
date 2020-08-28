@@ -17,6 +17,7 @@ module.exports = {
     xrgs.shift()
     xrgs.shift()
     xrgs.shift()
+    xrgs.shift()
     args[3] = xrgs.join(' ')
     client.user.setPresence({
       activity: {
