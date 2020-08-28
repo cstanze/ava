@@ -20,7 +20,7 @@ module.exports = {
       }
       let finalMsg = ""
       for(let [key, value] of Object.entries(filteredByType)) {
-        if(key == 'Private' && msg.member.user.permLevel >= 9) continue
+        if(key == 'Private' && msg.member.user.permLevel != 10) continue
         finalMsg += `${emojiForKey(key)} **${key}**\n\`\`\`${value.replace("undefined", "").trim().slice(0, -1)}\`\`\`\n`
       }
       return msg.author.send(data)
