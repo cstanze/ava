@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 
 module.exports = {
-  name: 'setPlaying',
+  name: 'setplaying',
   description: 'Set Playing Status of Ava',
   type: 'Private',
   aliases: ['setstatus'],
