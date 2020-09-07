@@ -7,10 +7,11 @@ module.exports = async (client, message) => {
     if(message.author.bot) return
     const settings = await client.getSettings(message.guild)
     const channel = message.guild.channels.cache.find(c => c.name == settings.mdl)
+    if(typeof channel == 'undefined') return
     const deleteEmbed = new Discord.MessageEmbed()
-      .setDescription(`**Message sent by** <@!${message.author.id}> deleted in** <#${message.guild.channels.cache.find(c => c.name == message.channel.name).id}>\n${message.content}`)
-      .setAuthor(client.user.tag, client.user.displayAvatarURL({ size: 512, dynamic: true }))
-      .setFooter(`Message ID: ${message.id}`)
+      .setDescription(`**Message sent by <@!${message.author.id}> deleted in** <#${message.guild.channels.cache.find(c => c.name == message.channel.name).id}>\n${message.content}`)
+      .setAuthor(message.author.tag, message.author.displayAvatarURL({ size: 512, dynamic: true }))
+      .setFooter(`Author: ${message.author.id} | Message ID: ${message.id}`)
       .setTimestamp()
       .setColor('#ff1100')
     channel.send(deleteEmbed)

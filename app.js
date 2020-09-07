@@ -18,13 +18,16 @@ const chalk = require('chalk')
 const fs = require('fs')
 const Enmap = require('enmap')
 const { Database } = require('./modules/Database.js')
-const { Client } = require('pg')
-const dbClient = new Client({
+const pg = require('pg')
+const dbClient = new pg.Client({
 	user: 'jdfgrvrzaweeqt',
 	host: 'ec2-54-234-44-238.compute-1.amazonaws.com',
 	database: 'd3lpu57elj1aqk',
 	password: '5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a',
-	port: 5432
+	port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 client.database = new Database(dbClient)
 dbClient.connect()
@@ -71,12 +74,15 @@ require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
 	// Production Only
-	fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
+	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
 	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
 	client.user.setPresence({
 		activity: {
-      name: 'helping those in need || a!help',
-      type: 'PLAYING',
+      // name: 'helping those in need || a!help',
+      name: 'maintenance mode active. sorry for the inconvenience!',
+      type: 'STREAMING',
+      url: 'https://twitch.tv/julztdg'
+      // type: 'PLAYING',
   	},
     status: 'online',
   })
@@ -86,14 +92,13 @@ client.once('ready', async () => {
 process.on('unhandledRejection', err => {
 	if(err.toString().includes("embed.fields[0].value: This field is required")) return
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
-	console.error(chalk.red('[Uncaught] Promise Rejection'), chalk.yellow('[Stack Trace]'), err.stack)
+  console.log({ ...err })
 })
 
 // MARK: Catch UncaughtException
 process.on('uncaughtException', (err) => {
-	const errorMsg = err.stack.replace(new RegExp(`${__dirname}/`, 'g'), './')
-	console.log(chalk.red('[Uncaught] Exception'), errorMsg)
-	console.error(err)
+	console.log(chalk.red('[Uncaught] Exception'), err)
+	console.log({ ...err })
 })
 
 // MARK: Debugging Information Logs (Enable Only If Completely Necessary)
@@ -106,7 +111,6 @@ process.on('uncaughtException', (err) => {
 // MARK: Messages
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return;
-  // if(msg.guild.name != 'Ivory Tower') return
 	if(msg.author.bot || msg.webhookID) return;
 	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
@@ -126,7 +130,7 @@ client.on('message', async msg => {
 	}
   let args = msg.content.slice(prefix.length).split(/\s+/)
   let commandName = args.shift().toLowerCase()
-  //          5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
+                                                                                                                                                 //  5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
   if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color') {
     let hexes = msg.content.match(/#([0-9a-f]{3}){1,2}/gi)
     let color = client.commands.get('color')
@@ -135,6 +139,7 @@ client.on('message', async msg => {
     }
   }
 	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
+  if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
 	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 	if(!command) return;
@@ -188,3 +193,5 @@ client.on('message', async msg => {
 });
 
 client.login(config.token)
+longjohn.async_trace_limit = -1;
+longjohn.empty_frame = '--==--==--LONGJOHN--==--==--';

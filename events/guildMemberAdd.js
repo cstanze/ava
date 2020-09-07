@@ -6,6 +6,7 @@ module.exports = (client, member) => {
   if(settings.we != 'true') return
 
   const welcomeMessage = settings.wm.replace('{{user}}', member.user).replace('{{member_count}}', member.guild.members.cache.size+1)
-
-  member.guild.channels.cache.find(c => c.name.toLowerCase() == settings.wc.toLowerCase().replace(/\s+/g, '-')).send(welcomeMessage).catch(console.error)
+  let chan = member.guild.channels.cache.find(c => c.name.toLowerCase() == settings.wc.toLowerCase().replace(/\s+/g, '-'))
+  if(typeof chan == 'undefined') return
+  chan.send(welcomeMessage).catch(console.error)
 }

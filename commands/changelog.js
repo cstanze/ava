@@ -2,14 +2,15 @@ const Discord = require('discord.js')
 const fetch = require('node-fetch')
 let oldChannelName = "Semi-Stable"
 let channelName = "Stable"
-let versionString = `v3.2.0`
+let versionString = `v3.6.0`
 
 module.exports = {
   name: 'changelog',
   description: 'Ava Changelog',
   type: 'Misc',
   async execute(client, msg, args) {
-    let changes = await fetch(`https://gist.githubusercontent.com/Julz4455/ef5b7457e61d29621a75db1c19757580/raw/15e443df00c5ba6b01a884d8d5ba3230d64caf42/ava-changelog.json`)
+    return msg.channel.send('This command is disabled until further notice.')
+    let changes = await fetch(`https://gist.githubusercontent.com/Julz4455/ef5b7457e61d29621a75db1c19757580/raw/f138c2a74cd22d8eb08faba487c3048f8a928039/ava-changelog.json`)
     changes = await changes.json()
     changes = changes.versions
     let changelog = new Discord.MessageEmbed()
