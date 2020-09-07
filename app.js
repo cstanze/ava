@@ -124,10 +124,8 @@ client.on('message', async msg => {
 		guildPrefix = typeof guildPrefix.rows[0] == 'undefined' ? 'a!' : guildPrefix.rows[0].prefix
 		if(msg.content.toLowerCase().startsWith(guildPrefix)) prefix = guildPrefix
 	}
-	const mentionPrefix = new RegExp(`^<@!?${client.user.id}>( |)$`)
-	if(msg.content.match(mentionPrefix)) {
-		return msg.reply(`My global prefix is: \`${globalPrefix}\`. ${msg.member.hasPermission('MANAGE_GUILD') ? `You can use \`${globalPrefix}prefix <prefix>\` to change the prefix for this guild!` : `You can use \`${globalPrefix}prefix\` to find the prefix for this guild!`}`)
-	}
+	if(msg.content.toLowerCase().startsWith(`<@${client.user.id}>`)) prefix = `<@${client.user.id}>`
+	if(msg.content.toLowerCase().startsWith(`<@!${client.user.id}>`)) prefix = `<@!${client.user.id}>
   let args = msg.content.slice(prefix.length).split(/\s+/)
   let commandName = args.shift().toLowerCase()
                                                                                                                                                  //  5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
@@ -138,8 +136,10 @@ client.on('message', async msg => {
       await color.execute(client, msg, [hex])
     }
   }
-	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
+	if(!msg.content.toLowerCase().startsWith(prefix) || !msg.content.toLowerCase().startsWith(`<@${client.user.id}>`) || !msg.content.toLowerCase().startsWith(`<@!${client.user.id}>`) || msg.author.bot || msg.webhookID) return;
 //   if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
+	args = msg.content.slice(prefix.length).split(/\s+/)
+   	commandName = args.shift().toLowerCase()
 	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 	if(!command) return;
