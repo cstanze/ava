@@ -74,15 +74,15 @@ require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
 	// Production Only
-	// fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
+	fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
 	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
 	client.user.setPresence({
 		activity: {
-      // name: 'helping those in need || a!help',
-      name: 'maintenance mode active. sorry for the inconvenience!',
-      type: 'STREAMING',
-      url: 'https://twitch.tv/julztdg'
-      // type: 'PLAYING',
+      name: 'helping those in need || a!help',
+      // name: 'maintenance mode active. sorry for the inconvenience!',
+      // type: 'STREAMING',
+      // url: 'https://twitch.tv/julztdg'
+      type: 'PLAYING',
   	},
     status: 'online',
   })
