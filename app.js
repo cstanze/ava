@@ -139,7 +139,7 @@ client.on('message', async msg => {
     }
   }
 	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
-  if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
+//   if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
 	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 	if(!command) return;
