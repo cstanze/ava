@@ -1,9 +1,16 @@
 /**
- * TODO          REFERENCES
- * VC bot        VoiceMaster/Yggdrasil
- * HQ Hentai     Marriage Bot
- * Channel Nuke  Yui
- * Dev Utils     Dyno/Mee6
+ * TODO          STATUS
+ * VC bot        Not Started
+ * HQ Hentai     Done
+ * Channel Nuke  Not Started
+ * Dashboard     Not Started
+ * Guild Backup  In Progress
+ * =====================
+ * REFERENCES
+ * VoiceMaster/Yggdrasil
+ * Marriage Bot
+ * Yui
+ * Dyno/Mee6
  **/
 
 const Discord = require('discord.js')
@@ -74,15 +81,20 @@ require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
 	// Production Only
-	fetch('https://maker.ifttt.com/trigger/ava_start/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db')
-	console.log(chalk.blue(`[Ava][Shard ${client.shard.ids[0]}]`), chalk.green('[Ready]'),'Ready!')
+  fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
+		method: 'POST',
+		body: JSON.stringify({
+			'value1': 'Ava has started! She\'s primed and ready to go!'
+		})
+	})
+  console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
-      name: 'helping those in need || a!help',
-      // name: 'maintenance mode active. sorry for the inconvenience!',
-      // type: 'STREAMING',
-      // url: 'https://twitch.tv/julztdg'
-      type: 'PLAYING',
+      // name: 'helping those in need || a!help',
+      name: 'maintenance mode active. sorry for the inconvenience!',
+      type: 'STREAMING',
+      url: 'https://twitch.tv/julztdg'
+      // type: 'PLAYING',
   	},
     status: 'online',
   })
@@ -92,13 +104,33 @@ client.once('ready', async () => {
 process.on('unhandledRejection', err => {
 	if(err.toString().includes("embed.fields[0].value: This field is required")) return
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
-  console.log({ ...err })
+  fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
+		let res = await _.text()
+		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
+			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
+    		method: 'POST',
+    		body: JSON.stringify({
+    			'value1': 'Uh oh! Ava had an uncaught promise rejection. Check heroku logs for more information'
+    		})
+    	})
+		})() : (() => {})
+	})
 })
 
 // MARK: Catch UncaughtException
 process.on('uncaughtException', (err) => {
 	console.log(chalk.red('[Uncaught] Exception'), err)
-	console.log({ ...err })
+  fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
+		let res = await _.text()
+		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
+			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
+    		method: 'POST',
+    		body: JSON.stringify({
+    			'value1': 'Uh oh! Ava had an uncaught exception. Check heroku logs for more information'
+    		})
+    	})
+		})() : (() => {})
+	})
 })
 
 // MARK: Debugging Information Logs (Enable Only If Completely Necessary)
@@ -110,8 +142,9 @@ process.on('uncaughtException', (err) => {
 
 // MARK: Messages
 client.on('message', async msg => {
-	if(msg.channel.type != "text") return;
-	if(msg.author.bot || msg.webhookID) return;
+	if(msg.channel.type != "text") return
+	if(msg.author.bot || msg.webhookID) return
+  if(msg.guild.id == '264445053596991498') return
 	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
 	if(typeof blacklistStatus != 'undefined') return
@@ -139,7 +172,7 @@ client.on('message', async msg => {
     }
   }
 	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
-//   if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
+  if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
 	args = msg.content.slice(prefix.length).split(/\s+/)
    	commandName = args.shift().toLowerCase()
 	let command = client.commands.get(commandName)

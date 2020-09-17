@@ -64,7 +64,7 @@ module.exports = client => {
   */
   client.awaitReply = async (msg, question, limit = 60000, id = 'nid') => {
     if(id == 'nid') id = msg.author.id
-    const filter = m => m.author.id == id
+    const filter = m => m.author.id == id // && !m.author.bot (Keep this in case.)
     await msg.channel.send(question)
     try {
       const collected = await msg.channel.awaitMessages(filter, { max: 1, time: limit, errors: ['time'] })
@@ -74,6 +74,7 @@ module.exports = client => {
       return false
     }
   }
+
   client.clean = async (client, text) => {
     return text.replace(client.token, 'mfa.VkO_2G4Qv3T--No-Token-For-U--lWetW_tjND--Cleaned-by-Ava--QFTm6YGtzq9PHtg0')
   }
