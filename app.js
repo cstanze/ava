@@ -90,11 +90,11 @@ client.once('ready', async () => {
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
-      // name: 'helping those in need || a!help',
-      name: 'maintenance mode active. sorry for the inconvenience!',
-      type: 'STREAMING',
-      url: 'https://twitch.tv/julztdg'
-      // type: 'PLAYING',
+      name: 'helping those in need || a!help',
+      // name: 'maintenance mode active. sorry for the inconvenience!',
+      // type: 'STREAMING',
+      // url: 'https://twitch.tv/julztdg'
+      type: 'PLAYING',
   	},
     status: 'online',
   })
