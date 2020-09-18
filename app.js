@@ -83,9 +83,9 @@ client.once('ready', async () => {
 	// Production Only
   fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
 		method: 'POST',
-		body: JSON.stringify({
-			'value1': 'Ava has started! She\'s primed and ready to go!'
-		})
+		body: "{
+			\"value1\": \"Ava has started! She's primed and ready to go!\"
+		}"
 	})
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
@@ -109,9 +109,9 @@ process.on('unhandledRejection', err => {
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
 			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
     		method: 'POST',
-    		body: JSON.stringify({
-    			'value1': 'Uh oh! Ava had an uncaught promise rejection. Check heroku logs for more information'
-    		})
+    		body: "{
+			\"value1\": \"Ava has encountered an unhandled promise rejection. Check heroku logs for more information\"
+		}"
     	})
 		})() : (() => {})
 	})
@@ -125,9 +125,9 @@ process.on('uncaughtException', (err) => {
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
 			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
     		method: 'POST',
-    		body: JSON.stringify({
-    			'value1': 'Uh oh! Ava had an uncaught exception. Check heroku logs for more information'
-    		})
+    		body: "{
+			\"value1\": \"Ava has encountered an unhandled exception. Check heroku logs for more information\"
+		}"
     	})
 		})() : (() => {})
 	})
@@ -144,7 +144,7 @@ process.on('uncaughtException', (err) => {
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return
 	if(msg.author.bot || msg.webhookID) return
-  if(msg.guild.id == '264445053596991498') return
+ 	if(msg.guild.id == '264445053596991498') return
 	let blacklisted = await db.get(`blacklist`) || []
 	let blacklistStatus = blacklisted.find(u => u.userId == msg.member.id)
 	if(typeof blacklistStatus != 'undefined') return
@@ -172,7 +172,7 @@ client.on('message', async msg => {
     }
   }
 	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
-  if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
+//   if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
 	args = msg.content.slice(prefix.length).split(/\s+/)
    	commandName = args.shift().toLowerCase()
 	let command = client.commands.get(commandName)
