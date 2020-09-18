@@ -83,9 +83,7 @@ client.once('ready', async () => {
 	// Production Only
   fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
 		method: 'POST',
-		body: "{
-			\"value1\": \"Ava has started! She's primed and ready to go!\"
-		}"
+		body: '{"value1": "Ava has started! She\'s primed and ready to go!"}'
 	})
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
@@ -109,9 +107,7 @@ process.on('unhandledRejection', err => {
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
 			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
     		method: 'POST',
-    		body: "{
-			\"value1\": \"Ava has encountered an unhandled promise rejection. Check heroku logs for more information\"
-		}"
+    		body: '{\"value1": "Ava has encountered an unhandled promise rejection. Check heroku logs for more information"}'
     	})
 		})() : (() => {})
 	})
@@ -125,9 +121,7 @@ process.on('uncaughtException', (err) => {
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
 			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
     		method: 'POST',
-    		body: "{
-			\"value1\": \"Ava has encountered an unhandled exception. Check heroku logs for more information\"
-		}"
+    		body: '{"value1": "Ava has encountered an unhandled exception. Check heroku logs for more information"}'
     	})
 		})() : (() => {})
 	})
