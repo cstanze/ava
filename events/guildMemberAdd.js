@@ -1,6 +1,8 @@
 // This event executes when a new member joins a server. Let's welcome them!
 
 module.exports = (client, member) => {
+  if(member.guild.id == '264445053596991498') return
+  if(member.guild.id == `110373943822540800`) return
   const settings = client.getSettings(member.guild)
 
   if(settings.we != 'true') return

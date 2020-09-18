@@ -6,6 +6,8 @@ module.exports = async (client, emoji) => {
     const settings = await client.getSettings(emoji.guild)
     const channel = await emoji.guild.channels.cache.find(c => c.name == settings.mdl)
     if(typeof channel == 'undefined') return
+    if(channel.guild.id == '264445053596991498') return
+    if(channel.guild.id == `124622509881425920`) return
     const emojiEmbed = new Discord.MessageEmbed()
       .setDescription(emoji.animated ? `<a:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`)
       .setAuthor(`${emoji.guild.name} - Emoji Create`, emoji.guild.iconURL({ size: 512, dynamic: true }))

@@ -10,6 +10,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     const channel = oldMessage.guild.channels.cache.find(c => c.name == settings.mdl)
     if(typeof channel == 'undefined') return
     if(channel.guild.id == '264445053596991498') return
+    if(channel.guild.id == `124622509881425920`) return
     const editEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message edited in** <#${oldMessage.guild.channels.cache.find(c => c.name == newMessage.channel.name).id}> [Jump to Message](${newMessage.url})`)
       .setAuthor(newMessage.author.tag, newMessage.author.displayAvatarURL({ size: 512, dynamic: true }))
