@@ -78,13 +78,11 @@ client.settings = new Enmap({ name: 'settings' })
 const db = require('quick.db')
 const globalPrefix = 'a!'
 require('./modules/functions.js')(client)
+const exec = require('child_process').execSync
 
 client.once('ready', async () => {
 	// Production Only
-  fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
-		method: 'POST',
-		body: '{"value1": "Ava has started! She\'s primed and ready to go!"}'
-	})
+	exec(`curl -X POST -H "Content-Type: application/json" -d '{"value1": "Ava is now online and ready to go!"}' https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db`)
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
@@ -105,10 +103,7 @@ process.on('unhandledRejection', err => {
   fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
 		let res = await _.text()
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
-			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
-    		method: 'POST',
-    		body: '{\"value1": "Ava has encountered an unhandled promise rejection. Check heroku logs for more information"}'
-    	})
+			exec(`curl -X POST -H "Content-Type: application/json" -d '{"value1": "Ava has encountered an unhandled promise rejection error.\n${err.toString()}"}' https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db`)
 		})() : (() => {})
 	})
 })
@@ -119,10 +114,7 @@ process.on('uncaughtException', (err) => {
   fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
 		let res = await _.text()
 		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
-			fetch('https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db', {
-    		method: 'POST',
-    		body: '{"value1": "Ava has encountered an unhandled exception. Check heroku logs for more information"}'
-    	})
+			exec(`curl -X POST -H "Content-Type: application/json" -d '{"value1": "Ava has encountered an unhandled exception error.\n${err.toString()}"}' https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db`)
 		})() : (() => {})
 	})
 })
