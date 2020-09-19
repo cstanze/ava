@@ -100,23 +100,11 @@ client.once('ready', async () => {
 process.on('unhandledRejection', err => {
 	if(err.toString().includes("embed.fields[0].value: This field is required")) return
 	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
-  fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
-		let res = await _.text()
-		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
-			exec(`curl -X POST -H "Content-Type: application/json" -d '{"value1": "Ava has encountered an unhandled promise rejection error.\n${err.toString()}"}' https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db`)
-		})() : (() => {})
-	})
 })
 
 // MARK: Catch UncaughtException
 process.on('uncaughtException', (err) => {
 	console.log(chalk.red('[Uncaught] Exception'), err)
-  fetch('https://gist.githubusercontent.com/Julz4455/250f3969a8b6b044ea174eec014c1176/raw/e132e55cbb27f2448f9a8f277799057c5c0ac197/ava_uupe').then(async _ => {
-		let res = await _.text()
-		res.split('\n')[1].toLowerCase() == 'yes' ? (() => {
-			exec(`curl -X POST -H "Content-Type: application/json" -d '{"value1": "Ava has encountered an unhandled exception error.\n${err.toString()}"}' https://maker.ifttt.com/trigger/ava_event/with/key/fv1KMm9l07e3vmqr183BeJ7t_c7rPLwDtQqR4gK-9Db`)
-		})() : (() => {})
-	})
 })
 
 // MARK: Debugging Information Logs (Enable Only If Completely Necessary)
