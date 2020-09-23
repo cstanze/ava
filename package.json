@@ -29,6 +29,7 @@
     "erlpack": "github:discordapp/erlpack",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.2.0",
+    "hastebin-gen": "*",
     "keyv": "^4.0.1",
     "long": "^4.0.0",
     "longjohn": "^0.2.12",
