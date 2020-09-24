@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const { inspect } = require(`util`)
 let embede
 let result
-let col
+let fail
 let start
 
 module.exports = {
