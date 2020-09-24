@@ -28,7 +28,7 @@ module.exports = {
       msg.channel.send(new Discord.MessageEmbed()
                        .addField(`\u200B`, `\`\`\`js\n${result}\`\`\``)
                        .setColor(fail ? `#ff0033` : `#8074d2`)
-                       .setFooter(`${new Date() - start}ms`, mesf.author.avatarURL()))
+                       .setFooter(`${new Date() - start}ms`, msg.author.avatarURL()))
     }
   }
 }
