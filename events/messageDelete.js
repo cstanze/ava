@@ -10,7 +10,7 @@ module.exports = async (client, message) => {
     if(typeof channel == 'undefined') return
     if(channel.guild.id == '264445053596991498') return
     if(channel.guild.id == `124622509881425920`) return
-    if(channel.parent && channel.parent.id = '758777413718114369') return
+    if(channel.parent && channel.parent.id == '758777413718114369') return
     const deleteEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message sent by <@!${message.author.id}> deleted in** <#${message.guild.channels.cache.find(c => c.name == message.channel.name).id}>\n${message.content}`)
       .setAuthor(message.author.tag, message.author.displayAvatarURL({ size: 512, dynamic: true }))
