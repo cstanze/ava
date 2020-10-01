@@ -3,7 +3,7 @@
  * VC bot        Not Started
  * HQ Hentai     Done
  * Channel Nuke  Not Started
- * Dashboard     Not Started
+ * Dashboard     In Progress
  * Guild Backup  In Progress
  * =====================
  * REFERENCES
