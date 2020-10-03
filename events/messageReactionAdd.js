@@ -13,6 +13,7 @@ module.exports = async (client, reaction, user) => {
 	}
   if(!reaction.message.guild) return
   const settings = await client.getSettings(reaction.message.guild.id)
+  if(reaction.message.content.includes(client.token)) return
   if(reaction.message.guild.id == '264445053596991498') return
   if(reaction.message.guild.id == `110373943822540800`) return
 	if(reaction.message.channel.type != "text") return

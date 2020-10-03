@@ -24,7 +24,7 @@ module.exports = {
       require(`hastebin-gen`)(result, { extension: `js`} ).then(haste => msg.channel.send(`Result was too big: ` + haste))
     } else if(result.length > 80000) {
       msg.channel.send(`I was going to send this in a hastebin, but the result is over 2,000 characters!`)
-    } else { 
+    } else {
       msg.channel.send(new Discord.MessageEmbed()
                        .addField(`\u200B`, `\`\`\`js\n${result}\`\`\``)
                        .setColor(fail ? `#ff0033` : `#8074d2`)

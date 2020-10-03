@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'addrole',
+  name: 'giverole',
   description: 'Adds a mentioned role to the mentioned user',
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',

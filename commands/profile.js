@@ -7,6 +7,10 @@ module.exports = {
   description: 'Get your guild specific profile!',
   type: 'User',
   async execute(client, msg, args) {
+    if(!(await client.dbl.hasVoted(msg.author.id))) {
+      msg.channel.send(`Please vote before using this command. It helps the creator so much. Thank you!`)
+      client.commands.get('vote').execute(client, msg, args)
+    }
     const target = msg.mentions.members.first() || msg.member
     if(target.id == client.id || target.user.bot) return msg.channel.send(`This is user is a bot!`)
     msg.channel.send(`Getting and organizing profile information for: \`${target.nickname || target.user.username}\`...`).then(async mxg => {
@@ -71,8 +75,8 @@ module.exports = {
         ctx.beginPath()
         ctx.arc(canvas.width/2, canvas.height-432/1.15-55.5, 93.75, 0, Math.PI * 2, true)
         const arcGradient = ctx.createLinearGradient(canvas.width/2-93.75, canvas.height-432/1.15-93.75, canvas.width/2+93.75, canvas.height-432/1.15+93.75)
-        arcGradient.addColorStop(0, '#ffcfdf')
-        arcGradient.addColorStop(0.6, '#bof3f1')
+        arcGradient.addColorStop(0, '#da5182')
+        arcGradient.addColorStop(0.6, '#ee3b25')
         ctx.strokeStyle = arcGradient // '#6b6b6b' // '#ffffff'
         ctx.lineWidth = 10.5
         ctx.stroke()

@@ -5,11 +5,12 @@ module.exports = async (client, message) => {
   try {
     if(message.channel.type != 'text') return
     if(message.author.bot) return
+    if(message.content.includes(client.token)) return
     const settings = await client.getSettings(message.guild)
     const channel = message.guild.channels.cache.find(c => c.name == settings.mdl)
     if(typeof channel == 'undefined') return
     if(channel.guild.id == '264445053596991498') return
-    if(channel.guild.id == `124622509881425920`) return
+    if(channel.guild.id == `110373943822540800`) return
     if(channel.parent && channel.parent.id == '758777413718114369') return
     const deleteEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message sent by <@!${message.author.id}> deleted in** <#${message.guild.channels.cache.find(c => c.name == message.channel.name).id}>\n${message.content}`)

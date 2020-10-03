@@ -1,37 +1,43 @@
 const fs = require('fs')
 const { didYouMeanCustom } = require('../helpers/didyoumean.js')
-const db = require('quick.db')
+const chalk = require('chalk')
 
 module.exports = {
   name: 'fetchcommand',
-  description: 'Fetches & Reloads a new command file',
-  useMySQL: true,
+  description: 'Fetches and Reloads a new command file. Forks off to reload_command if command is already cached',
   type: 'Private',
   aliases: ['fcommand'],
   permissionsLevel: 'Bot Owner',
-  async execute(client, msg, args, con) {
-    let id = msg.member.user.id
+  async execute(client, msg, args) {
     if(!args.length) return msg.channel.send(`You did you pass any command to reload, ${msg.author}`)
-    const commandName = args[0]
-    const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
-    for(const file of commandFiles) {
-      const command = require(`./${file}`)
-      client.commands.set(command.name, command)
-    }
-    const command = msg.client.commands.get(commandName)
-                ||  msg.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
-    console.log(command)
-    if(!command) {
-      return msg.channel.send(`There is no command with name or alias \`${commandName}\`, ${msg.author}\nDid You Mean: ***${didYouMeanCustom(commandName, commandFiles)}***`)
-    }
-    delete require.cache[require.resolve(`./${command.name}.js`)]
-    try {
-      const newCommand = require(`./${command.name}.js`)
-      msg.client.commands.set(newCommand.name, newCommand)
-      msg.channel.send(`Command \`${command.name}\` was fetched & reloaded`)
-    } catch (error) {
-      console.error(error);
-      msg.channel.send(`There was an error while reload a command \`${command.name}\`:\n\`${error.message}\``)
-    }
+    msg.channel.send(`Fetching and Reloading the following commands: \`${args.join(' ')}\``).then(async msg => {
+      for(let i=0;i<args.length;i++) {
+        const commandName = args[i].toLowerCase()
+        const command = msg.client.commands.get(commandName)
+                    ||  msg.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
+        if(command) {
+          client.commands.get('reload_command').execute(client, msg, [args[i]])
+          continue
+        }
+        let commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+        commandFiles = commandFiles.map(c => c.split('.js')[0])
+        if(!commandFiles.includes(args[i])) {
+          msg.channel.send(`Command \`${args[i]}\` does not exist`)
+          continue
+        }
+        delete require.cache[require.resolve(`./${args[i]}.js`)]
+        try {
+          const newCommand = require(`./${args[i]}.js`)
+          client.commands.set(newCommand.name, newCommand)
+          console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.green(`[Success]`), newCommand.name)
+          msg.channel.send(`Command \`${args[i]}\` was reloaded`)
+        } catch (error) {
+          console.error(error)
+          msg.channel.send(`There was an error while reloading a command \`${args[i]}\`:\n\`${error.message}\``)
+          console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.red(`[Failure]`), args[i], error.message)
+        }
+      }
+      msg.delete()
+    })
   }
 }

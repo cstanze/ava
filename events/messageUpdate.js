@@ -5,12 +5,14 @@ module.exports = async (client, oldMessage, newMessage) => {
   try {
     if(oldMessage.channel.type != 'text') return
     if(oldMessage.author.bot) return
+    if(oldMessage.content.includes(client.token)) return
+    if(newMessage.content.includes(client.token)) return
     if(oldMessage.content == newMessage.content) return
     const settings = await client.getSettings(oldMessage.guild)
     const channel = oldMessage.guild.channels.cache.find(c => c.name == settings.mdl)
     if(typeof channel == 'undefined') return
     if(channel.guild.id == '264445053596991498') return
-    if(channel.guild.id == `124622509881425920`) return
+    if(channel.guild.id == `110373943822540800`) return
     if(channel.parent && channel.parent.id == '758777413718114369') return
     const editEmbed = new Discord.MessageEmbed()
       .setDescription(`**Message edited in** <#${oldMessage.guild.channels.cache.find(c => c.name == newMessage.channel.name).id}> [Jump to Message](${newMessage.url})`)

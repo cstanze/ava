@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 const chalk = require('chalk')
 
 module.exports = client => {
@@ -133,5 +134,43 @@ module.exports = client => {
   // Format Numbers in the Thousands with commas
   client.numbersWithCommas = (x) => {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+  }
+
+  client.code = (lang, contents) => {
+    return `${'```'}${lang}\n${contents}${'\n```'}`
+  }
+
+  client.logToStream = async (type, options) => {
+    (await client.guilds.fetch('646889834845175809')).channels.cache.get('761823906184167454').send(generateEmbedForType(type, options))
+  }
+
+}
+
+generateEmbedForType = (type, opts) => {
+  switch(type) {
+    case 'message':
+      return new Discord.MessageEmbed()
+        .setColor('#8074d2')
+        .setDescription(opts.content)
+    case 'ping':
+      return new Discord.MessageEmbed()
+        .setColor('RED')
+        .setTitle(`Ping Spike`)
+        .setDescription(`Ping Spike at ${opts.ping}ms!`)
+        .addField('Shard ID', opts.shard, true)
+        .addField('Time', new Date(Date.now()), true)
+    case 'join':
+      return new Discord.MessageEmbed()
+        .setColor('GREEN')
+        .setTitle('Guild Join')
+        .setDescription(`Joined Guild: ${opts.guildName}`)
+        .addField(`Owner`, opts.owner, true)
+        .addField(`Guild ID`, opts.guildId, true)
+    case 'leave':
+      return new Discord.MessageEmbed()
+        .setColor('RED')
+        .setTitle('Guild Leave')
+        .setDescription(`Left Guild: ${opts.guildName}`)
+        .addField(`Guild ID`, opts.guildId, true)
   }
 }

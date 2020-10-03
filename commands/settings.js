@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const chalk = require('chalk')
-const gKeys = ['guildid', 'mdl', 'mr', 'ar', 'sn', 'wc', 'wm', 'we', 'nxp', 'sc', 'ssc']
+const gKeys = ['guildid', 'mdl', 'mr', 'ar', 'sn', 'wc', 'wm', 'we', 'nxp', 'sc', 'ssc', 'avc']
 const tKeys = {
   mdl: 'modLogChannel',
   mr: 'modRole',
@@ -11,7 +11,8 @@ const tKeys = {
   we: 'welcomeEnabled',
   nxp: 'noXPChannel',
   sc: 'starboardChannel',
-  ssc: 'sinboardChannel'
+  ssc: 'sinboardChannel',
+  avc: 'autoVoiceChannel'
 }
 const oKeys = {
   modLogChannel: 'mdl',
@@ -23,7 +24,8 @@ const oKeys = {
   welcomeEnabled: 'we',
   noXPChannel: 'nxp',
   starboardChannel: 'sc',
-  sinboardChannel: 'ssc'
+  sinboardChannel: 'ssc',
+  autoVoiceChannel: 'avc'
 }
 
 module.exports = {
@@ -51,10 +53,6 @@ module.exports = {
       const joinedValue = value.join(' ')
       if(joinedValue.length < 1) return msg.channel.send(`You must specify a value to set \`${key}\` to.`)
       if(joinedValue == settings[oKeys[key]]) return msg.channel.send(`The setting: \`${key}\` is already set to: \`${joinedValue}\``)
-      let mergedValues = { ...defaults }
-      mergedValues[oKeys[key]] = joinedValue
-      mergedValues = Object.values(mergedValues)
-      mergedValues.shift()
       await client.database.updateRow('guild', [`${oKeys[key]} = '${joinedValue}'`], [`guildid = '${msg.guild.id}'`])
       return msg.channel.send(`${msg.member.nickname || msg.member.user.username}, I've changed \`${key}\` to: \`${joinedValue}\``)
     } else if(action == 'del' || action == 'reset') {
@@ -87,7 +85,7 @@ module.exports = {
       let guildSettings = []
       Object.entries(overrides).forEach(([key, value]) => {
         if(key == 'id' || key == 'guildid') return
-        guildSettings.push(`${tKeys[key]}${' '.repeat(20 - tKeys[key].length)}:: ${value}`)
+        guildSettings.push(`${tKeys[key]}${' '.repeat(20 - tKeys[key].length)}:: ${value.substring(0, 27)+(value.length > 27 ? '...' : '')}`)
       })
       desc += guildSettings.join('\n')
       desc += '\n\`\`\`'

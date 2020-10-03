@@ -1,16 +1,14 @@
 const fs = require('fs')
 const { didYouMeanCustom } = require('../helpers/didyoumean.js')
 const chalk = require('chalk')
-const db = require('quick.db')
 
 module.exports = {
   name: 'reload_command',
   description: 'Reloads a command file',
-  useMySQL: true,
   type: 'Private',
   aliases: ['rcommand'],
   permissionsLevel: 'Bot Admin',
-  async execute(client, msg, args, con) {
+  async execute(client, msg, args) {
     if(!args.length) return msg.channel.send(`You didn't pass any command to reload, ${msg.author}`)
     msg.channel.send(`Reloading the following commands: \`${args.join(' ')}\``).then(async msg => {
       for(let i=0;i<args.length;i++) {
@@ -32,12 +30,11 @@ module.exports = {
           msg.channel.send(`Command \`${command.name}\` was reloaded`)
         } catch (error) {
           console.error(error);
-          msg.channel.send(`There was an error while reload a command \`${command.name}\`:\n\`${error.message}\``)
-          console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.red(`[Failure]`), newCommand.name, error.message)
+          msg.channel.send(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``)
+          console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.red(`[Failure]`), args[i], error.message)
         }
       }
       msg.delete()
     })
-    return
   }
 }

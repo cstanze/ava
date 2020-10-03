@@ -11,6 +11,7 @@ we  | welcomeEnabled
 nxp | noXPChannel
 sc  | starboardChannel
 ssc | sinboardChannel
+avc | autoVoiceChannel
 */
 
 class Database {
@@ -46,11 +47,6 @@ class Database {
   })
 
   upsertInto = async (table, keys, values, conflict, fallback) => new Promise((res, rej) => {
-    const valueBak = values
-    values = []
-    for(const value of valueBak) {
-      typeof value == 'string' ? values.push(`'${value}'`) : values.push(value)
-    }
     this.client.query(`INSERT INTO ${table}(${keys.join(', ')}) VALUES (${values.join(', ')}) ON CONFLICT (${conflict.join(', ')}) DO UPDATE SET ${fallback.join(', ')};`)
     this.client.query(`SELECT * FROM ${table}`, (err, rev) => {
       if(err) return rej(err)

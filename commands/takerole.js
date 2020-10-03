@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'removerole',
+  name: 'takerole',
   description: 'Removes the mentioned role from a user',
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',

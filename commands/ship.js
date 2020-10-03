@@ -3,7 +3,6 @@ const db = require('quick.db')
 const ms = require('ms')
 const parseMs = require('parse-ms')
 const moment = require('moment')
-const { fetchUserWithId } = require('../helpers/fetchMember.js')
 
 module.exports = {
   name: 'ship',
@@ -15,7 +14,7 @@ module.exports = {
     const target = msg.mentions.members.first() || 'nomb'
     if(target != 'nomb') {
       if(target.id == msg.member.id) return msg.channel.send(`:x: As much as you may love yourself, you can't pilot a ship alone.`)
-      
+
       if(typeof await db.get(`user_${msg.guild.id}_${msg.author.id}.ship`) != 'undefined' || await db.get(`user_${msg.guild.id}_${msg.author.id}.ship`) == null) {
         if(typeof await db.get(`user_${msg.guild.id}_${msg.author.id}.ship.so`) != 'undefined') return msg.channel.send(`:x: You are already shipped with someone else!`)
       }

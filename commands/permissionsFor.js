@@ -8,7 +8,7 @@ module.exports = {
   description: 'Gets the required permissions level for a command.',
   type: 'Utility',
   aliases: ['commandperms', 'permsfor'],
-  async execute(client, msg, args, con) {
+  async execute(client, msg, args) {
     if(!args.length) return msg.channel.send(`${msg.author}, Your permissions level is: ${msg.author.permLevel} (${client.config.permLevels.find(l => l.level == msg.author.permLevel).name})`)
     msg.channel.send(`Finding permissions for: \`${args.join(' ')}\``).then(async msg => {
       for(let i=0;i<args.length;i++) {
@@ -22,7 +22,6 @@ module.exports = {
           console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.red(`[Failure]`), newCommand.name)
           continue
         }
-        console.log(msg.author.level)
         const friendly = client.config.permLevels.find(l => l.level == msg.author.permLevel).name
         msg.channel.send(`Permissions Required For \`${commandName}\`: \`${command.permissionsLevel}\`\nYour permissions level: ${friendly}`)
       }

@@ -6,6 +6,7 @@ module.exports = {
   args: true,
   usage: '<vapor_text>',
   type: 'Text',
+  aliases: ['vaporwave', 'wave'],
   execute(client, msg, args) {
     args = args.join(' ')
 		if(args == null) args = "You Need Some Text"

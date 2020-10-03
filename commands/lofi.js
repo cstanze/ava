@@ -7,12 +7,12 @@ module.exports = {
   type: 'Music',
   aliases: ['study'],
   async execute(client, msg, args) {
+    if(!(await client.dbl.hasVoted(msg.author.id))) {
+      msg.channel.send(`Please vote before using this command. It helps the creator so much. Thank you!`)
+      client.commands.get('vote').execute(client, msg, args)
+    }
 		// Only try to join the sender's voice channel if they are in one themselves
 		if (msg.member.voice.channel) {
-			msg.member.voice.channel.members.each(mbr => {
-        if(mbr.user == client.user) return
-				mbr.voice.setMute(true).catch(console.error)
-			})
       let connection = await msg.member.voice.channel.join()
 			let randomVideo = await fs.readFileSync('./lofi-videos.txt').toString().split('\n')
 			let randomNumber = Math.floor(Math.random()*randomVideo.length)
@@ -20,7 +20,7 @@ module.exports = {
 			let dispatcher = connection.play(ytdl(video, { filter: 'audioonly', liveBuffer: 5000 }));
 			dispatcher.on("end", () => { connection.disconnect() })
 			msg.channel.send(`Now Playing: ${video}`)
-      client.dispatcher = dispatcher
+      client.dispatcher[`${msg.guild.id}`] = dispatcher
 		} else {
 			msg.channel.send('You need to join a voice channel first!');
 		}

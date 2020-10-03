@@ -7,10 +7,11 @@ module.exports = {
   type: 'Image',
   aliases: ['icon', 'pfp'],
   execute(client, msg, args) {
+    const user = msg.mentions.users.first() || msg.author
     let avatarEmbed = new Discord.MessageEmbed()
 		.setColor('#14c49e')
 		.setTitle(randomGivers[Math.floor(Math.random() * randomGivers.length)])
-		.setImage(msg.member.user.avatarURL({ size: 512, dynamic: true }))
+		.setImage(user.avatarURL({ size: 512, dynamic: true }))
 		.setTimestamp()
 		.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)], null)
 		msg.channel.send(avatarEmbed)
