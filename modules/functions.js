@@ -154,7 +154,7 @@ generateEmbedForType = (type, opts) => {
         .setDescription(opts.content)
     case 'ping':
       return new Discord.MessageEmbed()
-        .setColor('RED')
+        .setColor('ORANGE')
         .setTitle(`Ping Spike`)
         .setDescription(`Ping Spike at ${opts.ping}ms!`)
         .addField('Shard ID', opts.shard, true)
