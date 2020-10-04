@@ -21,7 +21,7 @@ module.exports = {
       fail = true
     }
     if (result.length > 1024 && result.length < 80000) {
-      require(`hastebin-gen`)(result, { extension: `js`} ).then(haste => msg.channel.send(`Result was too big: ` + haste))
+      require(`hastebin-gen`)(result, { extension: `js`, url: 'https://paste.mod.gg'} ).then(haste => msg.channel.send(`Result was too big: ` + haste))
     } else if(result.length > 80000) {
       msg.channel.send(`I was going to send this in a hastebin, but the result is over 2,000 characters!`)
     } else {
