@@ -19,6 +19,7 @@ module.exports = async (client, ovs, nvs) => {
     } else {
       const member = await nvs.guild.members.fetch(nvs.id)
       let channel = await ovs.guild.channels.cache.get(ovs.channelID)
+      if(!channel) return
       if(client.vcl[`${member.id}`] == channel.id) {
         if(!channel.members.size) {
           channel.delete(`Hope you enjoyed auto vc. - Love, Ava`)

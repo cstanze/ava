@@ -43,6 +43,7 @@
     "node-fetch": "^2.6.0",
     "parse-ms": "^2.1.0",
     "pg": "^8.2.1",
+    "qrcode": "^1.4.4",
     "quick.db": "7.0.0-b21",
     "random-puppy": "^1.1.0",
     "sequelize": "^5.21.10",

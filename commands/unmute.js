@@ -3,7 +3,7 @@ const ms = require('ms')
 const db = require('quick.db')
 const chalk = require('chalk')
 const fs = require('fs')
-const { fetchMemberWithId } = require('../helpers/fetchMember.js')
+const { fetchMemberWithId } = require('../util/fetchMember.js')
 
 module.exports = {
   name: 'unmute',
@@ -15,6 +15,9 @@ module.exports = {
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',
   async execute(client, msg, args) {
+    // Deprecated for now...
+    return msg.channel.send(`Please wait, this command is under construction!`)
+
     if(!msg.member.hasPermission('MANAGE_MESSAGES')) return msg.channel.send(`Hmm... Looks like you don't have the right permissions to mute somebody.`)
     const target = msg.mentions.members.first() || fetchMemberWithId(msg.guild, args[0])
     if(!target) return msg.channel.send(`You didn't specify a person to unmute`)
@@ -25,6 +28,6 @@ module.exports = {
       console.error(err)
       return msg.channel.send("Hmm... I couldn't seem to unmute this person.")
     })
-    msg.channel.send(`Successfully unmuted **${typeof target.nickname == "string" ? escapeMarkdown(target.nickname) : escapeMarkdown(target.user.username)}**`)
+    msg.channel.send(`Successfully unmuted **${typeof target.nickname == "string" ? Discord.Util.escapeMarkdown(target.nickname) : Discord.Util.escapeMarkdown(target.user.username)}**`)
   }
 }

@@ -55,24 +55,32 @@ client.logger = require('./modules/Logger')
 client.commands = new Discord.Collection()
 client.failedCommands = []
 client.failedEvents = []
+let cmdAlpha = {}
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
-console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command] [Load]`), `Loading a total of ${commandFiles.length} commands`)
+console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white('[Load]'), `Loading a total of ${commandFiles.length} commands`)
 for(const file of commandFiles) {
 	try{
 		const command = require(`./commands/${file}`)
-		console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Loading]`), `Loading command with name: ${command.name}`)
+    if(!cmdAlpha[command.name.charAt(0)]) {
+      cmdAlpha[command.name.charAt(0)] = true
+      console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Load]`), `Loading commands starting with: ${command.name.charAt(0).toUpperCase()}`)
+    }
 		client.commands.set(command.name, command)
 	} catch(e) {
     client.failedCommands.push([file.split('.')[0], e.toString()])
 		console.error(`Error while loading command: ${file.split('.')[0]}`, e)
 	}
 }
+let evAlpha = {}
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
-console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event] [Load]`), `Loading a total of ${eventFiles.length} events`)
+console.log(chalk.blue('[Ava]'), chalk.yellow(`[Event]`), chalk.white('[Load]'), `Loading a total of ${eventFiles.length} events`)
 for(const ev of eventFiles) {
 	const eventName = ev.split('.')[0]
 	try {
-		console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Loading]`), `Loading event with name: ${eventName}`)
+		if(!evAlpha[eventName.charAt(0)]) {
+      evAlpha[eventName.charAt(0)] = true
+      console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Load]`), `Loading events starting with: ${eventName.charAt(0).toUpperCase()}`)
+    }
 		const evx = require(`./events/${ev}`)
 		client.on(eventName, evx.bind(null, client))
 	} catch(e) {
@@ -106,8 +114,8 @@ client.once('ready', async () => {
     status: 'online',
   })
   setInterval((client) => {
-    if(client.ws.ping >= 300) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0] })
-  }, 3000, client)
+    if(client.ws.ping >= 500) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0], high: client.ws.ping > 1000 })
+  }, 7500, client)
 });
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
@@ -150,7 +158,7 @@ client.on('message', async msg => {
   let args = msg.content.slice(prefix.length).split(/\s+/)
   let commandName = args.shift().toLowerCase()
                                                                                                                                                   // 5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
-  if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color') {
+  if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color' && commandName != 'gradient') {
     let hexes = msg.content.match(/#([0-9a-f]{3}){1,2}/gi)
     let color = client.commands.get('color')
     for(let hex of hexes) {

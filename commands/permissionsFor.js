@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { didYouMeanCustom } = require('../helpers/didyoumean.js')
+const { didYouMeanCustom } = require('../util/didyoumean.js')
 const chalk = require('chalk')
 const db = require('quick.db')
 

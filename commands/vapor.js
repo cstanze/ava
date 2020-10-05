@@ -1,4 +1,4 @@
-const vaporString = require('../handlers/vapor')
+const vaporString = require('../util/vapor')
 
 module.exports = {
   name: 'vapor',

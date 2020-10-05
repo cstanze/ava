@@ -2,7 +2,7 @@ const randomPuppy = require('random-puppy')
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
-const { attachmentIsImage } = require('../helpers/attachments.js')
+const { attachmentIsImage } = require('../util/attachments.js')
 
 module.exports = {
   name: 'succubus',

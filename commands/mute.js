@@ -3,7 +3,7 @@ const ms = require('ms')
 const db = require('quick.db')
 const chalk = require('chalk')
 const fs = require('fs')
-const { fetchMemberWithId } = require('../helpers/fetchMember.js')
+const { fetchMemberWithId } = require('../util/fetchMember.js')
 
 module.exports = {
   name: 'mute',
@@ -15,6 +15,9 @@ module.exports = {
   type: 'Moderation',
   permissionsLevel: 'Server Moderator',
   async execute(client, msg, args) {
+    // Deprecated for now...
+    return msg.channel.send(`Please wait, this command is under construction!`)
+
     if(!msg.member.hasPermission('MANAGE_MESSAGES')) return msg.channel.send('This is awkward. Seems like you don\'t have the right permissions to mute somebody')
     let target = msg.mentions.members.first() || await fetchMemberWithId(msg.guild, args[0])
     if(!target) return msg.channel.send(`You didn't specify who to mute.\nType: ${msg.prefix}`)

@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { didYouMeanCustom } = require('../helpers/didyoumean.js')
+const { didYouMeanCustom } = require('../util/didyoumean.js')
 const chalk = require('chalk')
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
         let commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
         commandFiles = commandFiles.map(c => c.replace('.js', ''))
         if(!command) {
-          msg.channel.send(`There is no command with name or alias \`${commandName}\`, ${msg.author}\nDid You Mean: ***${didYouMeanCustom(commandName, commandFiles)}***`)
+          msg.channel.send(`There is no command with name or alias \`${commandName}\`\nDid You Mean: ***${didYouMeanCustom(commandName, commandFiles)}***`)
           console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white(`[Reload]`), chalk.red(`[Failure]`), newCommand.name)
           continue
         }

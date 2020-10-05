@@ -1,4 +1,4 @@
-const { attachmentIsImage } = require('../helpers/attachments.js')
+const { attachmentIsImage } = require('../util/attachments.js')
 const Discord = require('discord.js')
 // StarBoard, HonorBoard, SinBoard, etc.
 
@@ -40,7 +40,7 @@ module.exports = async (client, reaction, user) => {
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(isSpoiler) {
-						starredEmbed.attachFiles(['./images/spoiler.png'])
+						starredEmbed.attachFiles(['../images/spoiler.png'])
 						.setImage('attachment://spoiler.png')
 					} else {
 						starredEmbed.setImage(attachment.url)
@@ -73,7 +73,7 @@ module.exports = async (client, reaction, user) => {
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(isSpoiler) {
-						starredEmbed.attachFiles(['./images/spoiler.png'])
+						starredEmbed.attachFiles(['../images/spoiler.png'])
 						.setImage('attachment://spoiler.png')
 					} else {
 						starredEmbed.setImage(attachment.url)
@@ -108,7 +108,7 @@ module.exports = async (client, reaction, user) => {
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(isSpoiler) {
-						starredEmbed.attachFiles(['./images/spoiler.png'])
+						starredEmbed.attachFiles(['../images/spoiler.png'])
 						.setImage('attachment://spoiler.png')
 					} else {
 						starredEmbed.setImage(attachment.url)
@@ -142,7 +142,7 @@ module.exports = async (client, reaction, user) => {
 			if(hasAttachment) {
 				if(attachmentIsImage(attachment)) {
 					if(sinboard.nsfw) {
-						sinnedEmbed.attachFiles(['./images/spoiler.png'])
+						sinnedEmbed.attachFiles(['../images/spoiler.png'])
 						.setImage('attachment://spoiler.png')
 					} else {
 						sinnedEmbed.setImage(attachment.url)

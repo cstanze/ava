@@ -1,5 +1,6 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core')
 const fs = require('fs')
+const { lofi_yt } = require('../config')
 
 module.exports = {
   name: 'lofi',
@@ -14,10 +15,8 @@ module.exports = {
 		// Only try to join the sender's voice channel if they are in one themselves
 		if (msg.member.voice.channel) {
       let connection = await msg.member.voice.channel.join()
-			let randomVideo = await fs.readFileSync('./lofi-videos.txt').toString().split('\n')
-			let randomNumber = Math.floor(Math.random()*randomVideo.length)
-			let video = randomVideo[randomNumber]
-			let dispatcher = connection.play(ytdl(video, { filter: 'audioonly', liveBuffer: 5000 }));
+			let lfv = lofi_yt[Math.floor(Math.random()*lofi_yt.length)]
+			let dispatcher = connection.play(ytdl(lfv, { filter: 'audioonly', liveBuffer: 5000 }));
 			dispatcher.on("end", () => { connection.disconnect() })
 			msg.channel.send(`Now Playing: ${video}`)
       client.dispatcher[`${msg.guild.id}`] = dispatcher

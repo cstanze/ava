@@ -17,7 +17,7 @@ module.exports = {
 			return
 		}
     chan.createWebhook(`${msg.member.nickname ? msg.member.nickname : msg.author.username}`, { avatar: msg.member.user.avatarURL({ size: 512, dynamic: true }) }).then(async wh => {
-      let { embarrassRemarks } = require('../helpers/embarrassRemarks.js')
+      let { embarrassRemarks } = require('../util/embarrassRemarks.js')
       if(args[0] && msg.author.id == "334067823229796367") {
         await wh.send(embarrassRemarks[Number(args[0])])
       } else {
