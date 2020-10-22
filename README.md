@@ -1,9 +1,9 @@
 # Ava Source Code.
 ## Documentation doesn't exist
-If you've been invited follow the next instructions. If you hacked your way in, have fun with this code, idk what you might use it for.
+If you've been invited follow the next instructions. If (hackedWayIn == true) `return` msg.channel.send('have fun with this code, idk what you might use it for.');
 
 ### Instructions for people who were invited
-#### Prerequisites: Computer (I would be great if you use a Mac. But windows works too), JavaScript Knowledge, NodeJS 14.2.0 or greater installed, and some discord.js knowledge.
+#### Prerequisites: Computer (It would be great if it wasn't from the 1990's), JavaScript Knowledge, NodeJS 14.2.0 or greater installed, and some Discord.js knowledge.
 
 So, you've been invited. Great! You now have access to all the source code for the Ava discord bot!<br>
 Ok. To start off, clone this repo with the following:<br>
