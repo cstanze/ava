@@ -21,6 +21,7 @@ const Discord = require('discord.js')
 const Constants = require('./node_modules/discord.js/src/util/Constants.js')
 Constants.DefaultOptions.ws.properties.$browser = 'Discord iOS'
 const os = require('os')
+const axios = require("axios");
 const fetch = require('node-fetch')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
