@@ -18,7 +18,6 @@
     "anilist-node": "^1.4.0",
     "ascii-table": "0.0.9",
     "autocorrect": "^1.2.0",
-    "axios": "^0.18.0",
     "better-sqlite3": "^7.1.0",
     "body-parser": "^1.19.0",
     "bufferutil": "^4.0.1",
