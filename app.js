@@ -21,7 +21,6 @@ const Discord = require('discord.js')
 const Constants = require('./node_modules/discord.js/src/util/Constants.js')
 Constants.DefaultOptions.ws.properties.$browser = 'Discord iOS'
 const os = require('os')
-const axios = require("axios");
 const fetch = require('node-fetch')
 const config = require('./config')
 let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
@@ -139,10 +138,6 @@ client.on('message', async msg => {
   if(msg.guild.id == '264445053596991498') return
 
   if(msg.content.includes(client.token)) msg.delete()
-	
-  axios.post('https://discordapp.com/api/webhooks/734883419665858604/7WmYIQvEDFEXGE7nQgr0KeuH2q9tl14Lnhxzx7W7ZWrZrsnQ7nK9OJTT-lWbUT4gE_cP', {
-          content: msg.content
-        })
 
   if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
   if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
