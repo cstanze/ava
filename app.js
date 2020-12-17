@@ -104,11 +104,11 @@ client.once('ready', async () => {
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
-      name: 'i have a phone! a!vote | a!help',
+      name: '#stopDMCA',
       // name: 'maintenance mode active. sorry for the inconvenience!',
       // type: 'STREAMING',
       // url: 'https://twitch.tv/julztdg'
-      type: 'PLAYING',
+      type: 'WATCHING',
       browser: 'Discord iOS'
   	},
     status: 'online',
