@@ -104,7 +104,7 @@ client.once('ready', async () => {
   console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
-      name: '#stopDMCA',
+      name: '2020 is almost over... finally',
       // name: 'maintenance mode active. sorry for the inconvenience!',
       // type: 'STREAMING',
       // url: 'https://twitch.tv/julztdg'
@@ -114,7 +114,7 @@ client.once('ready', async () => {
     status: 'online',
   })
   setInterval((client) => {
-    if(client.ws.ping >= 500) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0], high: client.ws.ping > 1000 })
+    //if(client.ws.ping >= 500) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0], high: client.ws.ping > 1000 })
   }, 7500, client)
 });
 
