@@ -4,7 +4,7 @@ const config = require('./config.json')
 const chalk = require('chalk')
 const manager = new ShardingManager('./app.js', {
   token: config.token,
-  totalShards: 'auto',
+  totalShards: 4,
   respawn: true,
   mode: "process"
 })
