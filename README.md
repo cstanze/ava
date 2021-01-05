@@ -1,5 +1,6 @@
-# Ava Source Code.
-## Documentation doesn't exist
+# Ava Source Code
+## Documentation doesn't exist so don't ask
+
 If you've been invited follow the next instructions.  
 `if (hackedWayIn == true) return msg.channel.send('have fun with this code, idk what you might use it for.');`  
 
