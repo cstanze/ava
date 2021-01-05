@@ -2,6 +2,9 @@ const Discord = require('discord.js')
 // Send to message update to the mod-log
 
 module.exports = async (client, oldMessage, newMessage) => {
+  // Lets try a little somethin
+  client.emit('msg', (await newMessage.channel.messages.fetch(newMessage.id)))
+  return
   try {
     if(oldMessage.channel.type != 'text') return
     if(oldMessage.author.bot) return

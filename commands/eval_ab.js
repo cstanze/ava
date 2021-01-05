@@ -10,19 +10,20 @@ let embede,
     lang
 
 module.exports = {
-  name: 'eval',
-  description: 'Execute some code.',
+  name: 'eval_ab',
+  description: '(Pre-)Alpha/Beta Testing eval variations.\nCurrent variation: `Pre-Alpha LangEval`',
   type: 'Private',
-  permissionsLevel: 'Bot Owner',
+  permissionsLevel: 'True Owner',
   async execute(client, msg, args) {
     start = new Date()
-    // NOTE: Keep this as a fallback. Just in case
     // argss = msg.content.replace(RegExp(`${msg.prefix}eval\\s+(\\n?)+`, `gi`), ``)
-    argss = msg.content.match(/```.*\s*.*\s*```/gs)
-    if(argss == null) return msg.channel.send(`Please provide a valid codeblock.`)
-    argss = argss[0].replace(/\s*```.*\s*/g, '')
-    lang = msg.content.match(/```.*\s*.+\s*```/gs)[0].match(/```.*/g) ?
-           msg.content.match(/```.*\s*.+\s*```/gs)[0].match(/```.*/g)[0].replace('```', '')
+    argss = msg.content.match(/```.*\s*.+\s*```/gi)
+    if(argss == null
+      || !argss[0].replace(/\s*```.*\s*/gi, '').length)
+        return msg.channel.send(`Please provide a valid codeblock.`)
+    argss = argss[0].replace(/\s*```.*\s*/gi, '')
+    lang = msg.content.match(/```.*\s*.+\s*```/gi)[0].match(/```.*/gi) ?
+           msg.content.match(/```.*\s*.+\s*```/gi)[0].match(/```.*/gi)[0].replace('```', '')
            : 'js'
     lang = evalLangList[lang] || {
       extension: 'js',

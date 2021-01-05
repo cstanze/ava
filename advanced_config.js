@@ -1,12 +1,14 @@
 const config = {
+  "trueOwner": "334067823229796367",
   // Bot Owner IDs, useful for the new internal permissions system. Should always be a level 10 permission level.
-  "ownerID": ['334067823229796367', '391878815263096833', '135124731476049920', '674271647162695701', '459442073876299786', '626078049745502210', '767887755559829505'],
+  "ownerID": ['391878815263096833', '135124731476049920', '674271647162695701', '767887755559829505', '311947658531176451'],
+  //           Amiichu               Jack                  Constanze (Alt)       Constanze (School)    Joaquin
   // Bot Admins, Moves away from the db storage of bot admins but a newer storage of bot admins in an array. Level 9 permission level.
-  "admins": ['311947658531176451', '647114683626553344', '291247055496675338', '308375852167725056'],
+  "admins": ['647114683626553344', '291247055496675338', '308375852167725056'],
   // Bot support, level 8 permission level, still a large amount of commands at your disposal.
   "support": ['464838217070280704'],
   // Shh... It's the secret service
-  "secret_service": ['311947658531176451'],
+  "secret_service": ['626078049745502210'],
   // Default per-server settings
   "defaultSettings": {
     "modLogChannel": "mod-log",
@@ -68,7 +70,7 @@ const config = {
     },
     // Secret Service is a even more special inbetween level that has the equivalent of bot support but also some extra commands.
     // The secret service shouldn't be called more than ten times within a week. (Excluding chaotic weeks where people try to break into the the Ava system)
-    // The secret service has 8.5 level permissions because they really need to have blacklist and whitelist permissions
+    // The secret service has 8.5 level permissions because they really only need to have blacklist and whitelist permissions
     {
       level: 8.5,
       name: 'Secret Service',
@@ -87,6 +89,14 @@ const config = {
       level: 10,
       name: 'Bot Owner',
       check: msg => msg.client.config.ownerID.includes(msg.author.id)
+    },
+    // This is the true owner, this is the man with the plan, the brains and the brawn.
+    // Anyways, this is the highest permissions level achievable.
+    // This should only be given to the bot's true owner (the owner of the bot application and first to write code)
+    {
+      level: 11,
+      name: 'True Owner',
+      check: msg => msg.client.config.trueOwner == msg.author.id
     }
   ]
 }

@@ -1,0 +1,5 @@
+a.eval ```js
+msg.channel.send(`Hello World!`)
+```
+<>-<>
+a.say hello!

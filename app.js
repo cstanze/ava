@@ -3,12 +3,14 @@
   Forever will cedar-14 be the ground which Ava lies.
 */
 /**
- * TODO          STATUS
- * VC bot        Done
- * HQ Hentai     Done
- * Channel Nuke  Done
- * Guild Backup  Done
- * Dashboard     In Progress
+ * TODO                 STATUS
+ * VC bot               Done
+ * HQ Hentai            Done
+ * Channel Nuke         Done
+ * Guild Backup         Done
+ * Dashboard            Cancelled
+ * Multilanguage Eval   In Progress
+ * VC Bot Fix up        Not Started
  * =====================
  * REFERENCES
  * VoiceMaster/Yggdrasil
@@ -63,7 +65,6 @@ for(const file of commandFiles) {
 		const command = require(`./commands/${file}`)
     if(!cmdAlpha[command.name.charAt(0)]) {
       cmdAlpha[command.name.charAt(0)] = true
-      console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Command]`), chalk.white(`[Load]`), `Loading commands starting with: ${command.name.charAt(0).toUpperCase()}`)
     }
 		client.commands.set(command.name, command)
 	} catch(e) {
@@ -79,7 +80,6 @@ for(const ev of eventFiles) {
 	try {
 		if(!evAlpha[eventName.charAt(0)]) {
       evAlpha[eventName.charAt(0)] = true
-      console.log(chalk.blue(`[Ava]`), chalk.yellow(`[Event]`), chalk.white(`[Load]`), `Loading events starting with: ${eventName.charAt(0).toUpperCase()}`)
     }
 		const evx = require(`./events/${ev}`)
 		client.on(eventName, evx.bind(null, client))
@@ -101,7 +101,6 @@ const globalPrefix = 'a!'
 require('./modules/functions.js')(client)
 
 client.once('ready', async () => {
-  console.log(chalk.blue(`[Ava]`), chalk.green(`[Shards Loaded]`), `Loaded ${client.shard.ids.length} shards.`)
 	client.user.setPresence({
 		activity: {
       name: '2020 is almost over... finally',
@@ -121,12 +120,12 @@ client.once('ready', async () => {
 // MARK: Catch UnhandledPromiseRejectionWarnings
 process.on('unhandledRejection', err => {
 	if(err.toString().includes("embed.fields[0].value: This field is required")) return
-	console.error(chalk.red('[Uncaught] Promise Rejection'), err)
+	console.error(chalk.blue(`[Shard ${client.shard.ids[0]}]`), chalk.red('[Uncaught] Promise Rejection'), err)
 })
 
 // MARK: Catch UncaughtException
 process.on('uncaughtException', (err) => {
-	console.log(chalk.red('[Uncaught] Exception'), err)
+	console.log(chalk.blue(`[Shard ${client.shard.ids[0]}]`), chalk.red('[Uncaught] Exception'), err)
 })
 
 // MARK: Messages
@@ -136,6 +135,7 @@ client.on('message', async msg => {
   if(msg.author.bot || msg.webhookID) return
 
   if(msg.guild.id == '264445053596991498') return
+  if(msg.guild.id == '439866052684283905') return
 
   if(msg.content.includes(client.token)) msg.delete()
 
@@ -198,10 +198,8 @@ client.on('message', async msg => {
   const settings = msg.settings = client.getSettings(msg.guild)
   const level = client.permLevel(msg)
 	if(level < client.levelCache[command.permissionsLevel || "User"]) {
-		if(settings.systemNotice == "true") {
-			return msg.channel.send(`You do not have the right permissions to use this command. Your permissions level is ${level} (${client.config.permLevels.find(l => l.level == level).name})\nThis command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
-		}
-		return
+		return msg.channel.send(`You do not have the right permissions to use this command. Your permissions level is ${level} (${client.config.permLevels.find(l => l.level == level).name})
+    This command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
 	}
 
   msg.author.permLevel = level
@@ -211,10 +209,11 @@ client.on('message', async msg => {
 		if(command.args && !args.length) {
 			let reply = `Looks like you didn't provide any arguments.`
 			if(command.usage) {
-				reply += `\nProper Usage: \`${prefix}${command.name} ${command.usage}\``
+				reply += `\nProper Usage: \`${prefix}${command.name} ${command.usage.replace('shard_count', 4)}\``
 			}
 			if(command.example) {
-				reply += `\n\`${prefix}${command.name} ${command.example}\``
+        // TODO: Repalce shard_count with a non-static count (-1 since shard 1 is id 0)
+				reply += `\n\`${prefix}${command.name} ${command.example.replace('shard_count', 3)}\``
 			}
 			return msg.channel.send(reply)
 		}

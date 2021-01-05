@@ -7,9 +7,9 @@ module.exports = {
   description: 'Get your guild specific profile!',
   type: 'User',
   async execute(client, msg, args) {
-    if(!(await client.dbl.hasVoted(msg.author.id))) {
+    if(!(await client.dbl.hasVoted(msg.author.id)) && msg.author.permLevel != 10) {
       msg.channel.send(`Please vote before using this command. It helps the creator so much. Thank you!`)
-      client.commands.get('vote').execute(client, msg, args)
+      return client.commands.get('vote').execute(client, msg, args)
     }
     const target = msg.mentions.members.first() || msg.member
     if(target.id == client.id || target.user.bot) return msg.channel.send(`This is user is a bot!`)
