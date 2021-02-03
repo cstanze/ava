@@ -1,4 +1,5 @@
 const config = {
+  "self": "702896046480818218",
   "trueOwner": "334067823229796367",
   // Bot Owner IDs, useful for the new internal permissions system. Should always be a level 10 permission level.
   "ownerID": ['391878815263096833', '135124731476049920', '674271647162695701', '767887755559829505', '311947658531176451'],
@@ -6,9 +7,9 @@ const config = {
   // Bot Admins, Moves away from the db storage of bot admins but a newer storage of bot admins in an array. Level 9 permission level.
   "admins": ['647114683626553344', '291247055496675338', '308375852167725056'],
   // Bot support, level 8 permission level, still a large amount of commands at your disposal.
-  "support": ['464838217070280704'],
+  "support": ['740456733138223165'],
   // Shh... It's the secret service
-  "secret_service": ['626078049745502210'],
+  "secret_service": ['626078049745502210', '383479859411812352', '464838217070280704'],
   // Default per-server settings
   "defaultSettings": {
     "modLogChannel": "mod-log",
@@ -66,7 +67,7 @@ const config = {
     {
       level: 8,
       name: 'Bot Support',
-      check: msg => config.support.includes(msg.author.id)
+      check: msg => msg.client.config.support.includes(msg.author.id)
     },
     // Secret Service is a even more special inbetween level that has the equivalent of bot support but also some extra commands.
     // The secret service shouldn't be called more than ten times within a week. (Excluding chaotic weeks where people try to break into the the Ava system)
@@ -74,13 +75,13 @@ const config = {
     {
       level: 8.5,
       name: 'Secret Service',
-      check: msg => config.secret_service.includes(msg.author.id)
+      check: msg => msg.client.config.secret_service.includes(msg.author.id)
     },
     // Bot admin has some limited access like reloading commands and messing with high level currency commands. Just a large selection of commands
     {
       level: 9,
       name: 'Bot Admin',
-      check: msg => config.admins.includes(msg.author.id)
+      check: msg => msg.client.config.admins.includes(msg.author.id)
     },
     // This is the bot owner, this should be the highest permission level available.
     // The reason this should be the highest level is because of dangerous commands such as eval or exec
@@ -97,6 +98,12 @@ const config = {
       level: 11,
       name: 'True Owner',
       check: msg => msg.client.config.trueOwner == msg.author.id
+    },
+    // ***undocumented***
+    {
+      level: 99,
+      name: 'Self',
+      check: msg => msg.client.config.self == msg.author.id
     }
   ]
 }

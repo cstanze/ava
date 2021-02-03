@@ -11,14 +11,14 @@ module.exports = {
     if(args.length) {
       if(!msg.member.hasPermission('MANAGE_NICKNAMES')) return msg.channel.send(`You don't have sufficient permissions to change the prefix of Ava. Please try again later`)
       if(args[0] == "-") return msg.channel.send(`If you want a dash as the prefix, please use \`${msg.prefix}prefix \\-\`\nThis also applies for when you want a dash *in* the prefix.`)
-      return client.database.upsertInto(`prefixes`, [`guildid`, `prefix`], [`'${msg.guild.id}'`, `'${args[0].trim().replace(/\\-/g, 'x').replace(/\-/g, ' ').replace('x', '-')}'`], [`guildid`], [`prefix = '${args[0].trim().replace(/\\-/g, 'x').replace(/\-/g, ' ').replace('x', '-')}'`]).then(res => {
+      return client.database.upsertInto(`prefixes`, [`guildid`, `prefix`], [`${msg.guild.id}`, `'${args[0].trim().replace(/\\-/g, 'x').replace(/\-/g, ' ').replace('x', '-')}'`], [`guildid`], [`prefix = '${args[0].trim().replace(/\\-/g, 'x').replace(/\-/g, ' ').replace('x', '-')}'`]).then(res => {
         msg.channel.send(`Successfully set prefix to \`${args[0].trim().replace(/\\-/g, 'x').replace(/\-/g, ' ').replace('x', '-')}\``)
       }).catch(err => {
         console.log(err)
       })
     }
     client.database.selectFrom(`prefixes`, `WHERE guildid = '${msg.guild.id}'`).then(res => {
-      let currentPrefix = typeof res.rows[0] == 'undefined' ? `a!` : res.rows[0].prefix
+      let currentPrefix = typeof res.rows[0] == 'undefined' ? `a!` : String(res.rows[0].prefix)
       let prefixEmbed = new Discord.MessageEmbed()
       .setTitle(`${msg.guild.name}\'s Prefix: ${currentPrefix == null ? "a!" : currentPrefix}`)
       .setAuthor(`${msg.guild.name} Prefix`, msg.guild.iconURL({ size: 512, dynamic: true }))

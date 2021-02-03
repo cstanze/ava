@@ -1,7 +1,7 @@
 /*
-  Here lies the remains of cedar-14.
-  Forever will cedar-14 be the ground which Ava lies.
-*/
+	Here lies the remains of cedar-14.
+	Forever will cedar-14 be the ground upon which Ava lies.
+ */
 /**
  * TODO                 STATUS
  * VC bot               Done
@@ -20,13 +20,23 @@
  **/
 
 const Discord = require('discord.js')
-const Constants = require('./node_modules/discord.js/src/util/Constants.js')
-Constants.DefaultOptions.ws.properties.$browser = 'Discord iOS'
-const os = require('os')
-const fetch = require('node-fetch')
+
+// const Constants = require('./node_modules/discord.js/src/util/Constants.js')
+// Constants.DefaultOptions.ws.properties.$browser = 'Discord iOS'
+
+//const os = require('os')
+//const fetch = require('node-fetch')
 const config = require('./config')
-let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-const client = new Discord.Client({ partials: ['REACTION'], disableMentions: 'everyone' })
+//let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
+const client = new Discord.Client({ 
+	partials: ['MESSAGE', 'REACTION'],
+	disableMentions: 'everyone',
+	ws: {
+		properties: {
+			$browser: 'Discord iOS'
+		}
+	}
+})
 const DBL = require("dblapi.js")
 const dbl = new DBL(config.dblToken, client)
 client.dbl = dbl
@@ -40,15 +50,14 @@ const chalk = require('chalk')
 const fs = require('fs')
 const { Database } = require('./modules/Database.js')
 const pg = require('pg')
+pg.types.setTypeParser(20, String) // bigint (pg) -> String (js)
 const dbClient = new pg.Client({
-	user: 'jdfgrvrzaweeqt',
-	host: 'ec2-54-234-44-238.compute-1.amazonaws.com',
-	database: 'd3lpu57elj1aqk',
+	user: 'avapg',
+	host: 'localhost',
+	database: 'ava',
 	password: '5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a',
 	port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
+	ssl: false
 });
 client.database = new Database(dbClient)
 dbClient.connect()
@@ -63,12 +72,12 @@ console.log(chalk.blue('[Ava]'), chalk.yellow(`[Command]`), chalk.white('[Load]'
 for(const file of commandFiles) {
 	try{
 		const command = require(`./commands/${file}`)
-    if(!cmdAlpha[command.name.charAt(0)]) {
-      cmdAlpha[command.name.charAt(0)] = true
-    }
+		if(!cmdAlpha[command.name.charAt(0)]) {
+			cmdAlpha[command.name.charAt(0)] = true
+		}
 		client.commands.set(command.name, command)
 	} catch(e) {
-    client.failedCommands.push([file.split('.')[0], e.toString()])
+		client.failedCommands.push([file.split('.')[0], e.toString()])
 		console.error(`Error while loading command: ${file.split('.')[0]}`, e)
 	}
 }
@@ -79,12 +88,12 @@ for(const ev of eventFiles) {
 	const eventName = ev.split('.')[0]
 	try {
 		if(!evAlpha[eventName.charAt(0)]) {
-      evAlpha[eventName.charAt(0)] = true
-    }
+			evAlpha[eventName.charAt(0)] = true
+		}
 		const evx = require(`./events/${ev}`)
 		client.on(eventName, evx.bind(null, client))
 	} catch(e) {
-    client.failedEvents.push([eventName, e.toString()])
+		client.failedEvents.push([eventName, e.toString()])
 		console.log(`Error while loading event: ${eventName}`, e)
 	}
 }
@@ -103,27 +112,32 @@ require('./modules/functions.js')(client)
 client.once('ready', async () => {
 	client.user.setPresence({
 		activity: {
-      name: '2020 is almost over... finally',
-      // name: 'maintenance mode active. sorry for the inconvenience!',
-      // type: 'STREAMING',
-      // url: 'https://twitch.tv/julztdg'
-      type: 'WATCHING',
-      browser: 'Discord iOS'
-  	},
-    status: 'online',
-  })
-  setInterval((client) => {
-    //if(client.ws.ping >= 500) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0], high: client.ws.ping > 1000 })
-  }, 7500, client)
+			// you while you sleep
+			name: 'you while you sleep',
+			type: 'WATCHING',
+			browser: 'Discord iOS'
+			// name: 'maintenance mode active... sorry for the inconvenience!',
+			// type: 'STREAMING',
+			// url: 'https://twitch.tv/drunkprogramer'
+		},
+		status: 'online',
+	})
+	// eslint-disable-next-line no-unused-vars
+	setInterval((_client) => {
+		//if(client.ws.ping >= 500) return client.logToStream('ping', { ping: client.ws.ping, shard: client.shard.ids[0], high: client.ws.ping > 1000 })
+	}, 7500, client)
 });
 
 // MARK: Catch UnhandledPromiseRejectionWarnings
+// eslint-disable-next-line no-undef
 process.on('unhandledRejection', err => {
 	if(err.toString().includes("embed.fields[0].value: This field is required")) return
+	if(err.toString().includes("column \"undefined\" does not exist")) return
 	console.error(chalk.blue(`[Shard ${client.shard.ids[0]}]`), chalk.red('[Uncaught] Promise Rejection'), err)
 })
 
 // MARK: Catch UncaughtException
+// eslint-disable-next-line no-undef
 process.on('uncaughtException', (err) => {
 	console.log(chalk.blue(`[Shard ${client.shard.ids[0]}]`), chalk.red('[Uncaught] Exception'), err)
 })
@@ -132,55 +146,62 @@ process.on('uncaughtException', (err) => {
 client.on('message', async msg => {
 	if(msg.channel.type != "text") return
 
-  if(msg.author.bot || msg.webhookID) return
+	if(msg.author.bot || msg.webhookID || !msg.author) return
 
-  if(msg.guild.id == '264445053596991498') return
-  if(msg.guild.id == '439866052684283905') return
+	if(msg.guild.id == '264445053596991498') return
+	if(msg.guild.id == '439866052684283905') return
 
-  if(msg.content.includes(client.token)) msg.delete()
+	// Data Collection Queries
+	await client.database.updateRow('ncollect', ['num = num + 1'], [`numdesc = 'messages.count'`])
+	
+	// Blacklist
+	const blacklistedUser = (await client.database.selectFrom('blacklist', `where affected = ${msg.author.id}`)).rows
+	if(blacklistedUser.length) return 
 
-  if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
-  if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
+	if(msg.content.includes(client.token)) return msg.delete()
 
-  let prefix = globalPrefix
+	if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.bal`, Math.floor(Math.random() * 10))
+	if(msg.channel.name != await client.valueForSettingsKey(`nxp`, msg.guild)) db.add(`user_${msg.guild.id}_${msg.author.id}.xp`, Math.floor(Math.random() * 5))
+
+	let prefix = globalPrefix
 	if(!msg.content.toLowerCase().startsWith(globalPrefix) || !msg.content.toLowerCase().startsWith('a.')) {
 		let guildPrefix = await client.database.selectFrom(`prefixes`, `WHERE guildid = '${msg.guild.id}'`)
-		guildPrefix = typeof guildPrefix.rows[0] == 'undefined' ? 'a!' : guildPrefix.rows[0].prefix
+		guildPrefix = !guildPrefix.rows.length ? 'a!' : guildPrefix.rows[0].prefix
 		if(msg.content.toLowerCase().startsWith(guildPrefix)) prefix = guildPrefix
 	}
 
-  const mentionPrefix = new RegExp(`^<@!?${client.user.id}>(\\s|)$`)
+	const mentionPrefix = new RegExp(`^<@!?${client.user.id}>(\\s|)$`)
 	if(msg.content.match(mentionPrefix)) {
 		return msg.reply(`My global prefix is: \`${globalPrefix}\`. ${msg.member.hasPermission('MANAGE_GUILD') ? `You can use \`${globalPrefix}prefix <prefix>\` to change the prefix for this guild!` : `You can use \`${globalPrefix}prefix\` to find the prefix for this guild!`}`)
 	}
-  if(!msg.content.toLowerCase().startsWith(globalPrefix) && msg.content.toLowerCase().startsWith('a.')) prefix = 'a.'
+	if(!msg.content.toLowerCase().startsWith(globalPrefix) && msg.content.toLowerCase().startsWith('a.')) prefix = 'a.'
 
-  let args = msg.content.slice(prefix.length).split(/\s+/)
-  let commandName = args.shift().toLowerCase()
-                                                                                                                                                  // 5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
-  if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color' && commandName != 'gradient') {
-    let hexes = msg.content.match(/#([0-9a-f]{3}){1,2}/gi)
-    let color = client.commands.get('color')
-    for(let hex of hexes) {
-      await color.execute(client, msg, [hex])
-    }
-  }
+	let args = msg.content.slice(prefix.length).split(/\s+/)
+	let commandName = args.shift().toLowerCase()
+																																																																									// 5 3 3 8 3 3 4 3 0 5 0 1 4 2 5 1 5 3
+	if(!(/#\d\d\d\d/.test(msg.content)) && !(/#\d\d\d\d\d/.test(msg.content)) && !(/#\d\d/.test(msg.content)) && !(/#\d/.test(msg.content)) && !(/<#!?\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d>/.test(msg.content)) && /#([0-9a-f]{3}){1,2}/gi.test(msg.content) && commandName != 'color' && commandName != 'gradient') {
+		let hexes = msg.content.match(/#([0-9a-f]{3}){1,2}/gi)
+		let color = client.commands.get('color')
+		for(let hex of hexes) {
+			await color.execute(client, msg, [hex])
+		}
+	}
 
-  if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
-  // if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
+	if(!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot || msg.webhookID) return;
+	// if(msg.guild.id != '444116329977610240') return msg.channel.send(`Hey! I've been disabled for maintenance. Sorry for the inconvenience!`)
 
-  args = msg.content.slice(prefix.length).split(/\s+/)
-  commandName = args.shift().toLowerCase()
-  let command = client.commands.get(commandName)
+	args = msg.content.slice(prefix.length).split(/\s+/)
+	commandName = args.shift().toLowerCase()
+	let command = client.commands.get(commandName)
 			|| client.commands.find(c => c.aliases && c.aliases.includes(commandName))
 
-  if(!command) return;
+	if(!command) return;
 
-  if(!client.cooldowns.has(command.name)) {
+	if(!client.cooldowns.has(command.name)) {
 		client.cooldowns.set(command.name, new Discord.Collection())
 	}
 
-  const now = Date.now()
+	const now = Date.now()
 	const timestamps = client.cooldowns.get(command.name)
 	const cooldownAmount = (command.cooldown || 3) * 1000
 
@@ -192,17 +213,17 @@ client.on('message', async msg => {
 			return msg.reply(`You may not use the \`${command.name}\` command for another ${timeLeft.toFixed(1)} second(s)`)
 		}
 	}
-  timestamps.set(msg.author.id, now)
+	timestamps.set(msg.author.id, now)
 	setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
 
-  const settings = msg.settings = client.getSettings(msg.guild)
-  const level = client.permLevel(msg)
+	msg.settings = client.getSettings(msg.guild)
+	const level = client.permLevel(msg)
 	if(level < client.levelCache[command.permissionsLevel || "User"]) {
 		return msg.channel.send(`You do not have the right permissions to use this command. Your permissions level is ${level} (${client.config.permLevels.find(l => l.level == level).name})
-    This command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
+		This command requires a permissions level of ${client.levelCache[command.permissionsLevel]} (${command.permissionsLevel})`)
 	}
 
-  msg.author.permLevel = level
+	msg.author.permLevel = level
 	msg.member.user.permLevel = level
 
 	try {
@@ -212,15 +233,16 @@ client.on('message', async msg => {
 				reply += `\nProper Usage: \`${prefix}${command.name} ${command.usage.replace('shard_count', 4)}\``
 			}
 			if(command.example) {
-        // TODO: Repalce shard_count with a non-static count (-1 since shard 1 is id 0)
+				// TODO: Repalce shard_count with a non-static count (-1 since shard 1 is id 0)
 				reply += `\n\`${prefix}${command.name} ${command.example.replace('shard_count', 3)}\``
 			}
 			return msg.channel.send(reply)
 		}
 		if(command.nsfw && !msg.channel.nsfw) {
-			if(!msg.channel.name.includes('nsfw')) return msg.channel.send(`This is not an nsfw channel, therefore I can\'t send this in here!`)
+			if(!msg.channel.name.includes('nsfw')) return msg.channel.send(`This is not an nsfw channel, therefore I can't send this in here!`)
 		}
 		msg.prefix = prefix
+		await client.database.updateRow('ncollect', ['num = num + 1'], [`numdesc = 'messages.commands.exec.count'`])
 		await command.execute(client, msg, args)
 	} catch (error) {
 		console.error(error)

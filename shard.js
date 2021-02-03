@@ -22,4 +22,4 @@ manager.on('shardCreate', shard => {
   })
 })
 
-manager.spawn(this.totalShards, 9000, 40000)
+manager.spawn(this.totalShards, 9000, 30000)

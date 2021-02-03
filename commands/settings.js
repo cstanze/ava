@@ -38,14 +38,15 @@ module.exports = {
   example: 'edit modrole Mods',
   async execute(client, msg, [action, key, ...value]) {
     const settings = msg.settings;
-    const defaults = (await client.database.selectFrom('guild', `WHERE guildid = 'default'`)).rows[0]
-    let overrides = (await client.database.selectFrom('guild', `WHERE guildid = '${msg.guild.id}'`)).rows[0]
+    const defaults = (await client.database.selectFrom('guilds', `WHERE guildid = 0`)).rows[0]
+    let overrides = (await client.database.selectFrom('guilds', `WHERE guildid = ${msg.guild.id}`)).rows[0]
     let overrideDefaultSettings = defaults
     overrideDefaultSettings.guildid = msg.guild.id
     overrideDefaultSettings = Object.values(overrideDefaultSettings)
-    overrideDefaultSettings.shift()
-    if(typeof overrides == 'undefined') await client.database.insertInto('guild', gKeys, overrideDefaultSettings)
-    overrides = (await client.database.selectFrom('guild', `WHERE guildid = '${msg.guild.id}'`)).rows[0]
+    console.log(overrideDefaultSettings)
+
+    if(typeof overrides == 'undefined') await client.database.insertInto('guilds', gKeys, overrideDefaultSettings)
+    overrides = (await client.database.selectFrom('guilds', `WHERE guildid = ${msg.guild.id}`)).rows[0]
 
     if(action == 'edit' || action == 'set') {
       if(!key) return msg.channel.send(`Please specify a key to edit`)
@@ -53,7 +54,7 @@ module.exports = {
       const joinedValue = value.join(' ')
       if(joinedValue.length < 1) return msg.channel.send(`You must specify a value to set \`${key}\` to.`)
       if(joinedValue == settings[oKeys[key]]) return msg.channel.send(`The setting: \`${key}\` is already set to: \`${joinedValue}\``)
-      await client.database.updateRow('guild', [`${oKeys[key]} = '${joinedValue}'`], [`guildid = '${msg.guild.id}'`])
+      await client.database.updateRow('guilds', [`${oKeys[key]} = '${joinedValue}'`], [`guildid = ${msg.guild.id}`])
       return msg.channel.send(`${msg.member.nickname || msg.member.user.username}, I've changed \`${key}\` to: \`${joinedValue}\``)
     } else if(action == 'del' || action == 'reset') {
       if(!key) return msg.channel.send(`Please specify a key to reset`)
@@ -62,7 +63,7 @@ module.exports = {
       const response = await client.awaitReply(msg, `Are you sure you want to reset ${key} to the default value? (yes/no)`)
 
       if(['y', 'yes'].includes(response.toLowerCase())) {
-        client.database.updateRow('guild', [`${oKeys[key]} = '${defaults[oKeys[key]]}'`], [`guildid = '${msg.guild.id}'`])
+        client.database.updateRow('guilds', [`${oKeys[key]} = '${defaults[oKeys[key]]}'`], [`guildid = ${msg.guild.id}`])
         msg.channel.send(`\`${key}\` was successfully reset to default value of: ${defaults[oKeys[key]]}`)
       } else if(['no', 'n', 'cancel'].includes(response.toLowerCase())) {
         msg.channel.send(`\`${key}\` remains unchanged.`)

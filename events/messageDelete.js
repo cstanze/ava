@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 // Send to message delete to the mod-log
 
 module.exports = async (client, message) => {
+  return
   try {
     if(message.channel.type != 'text') return
     if(message.author.bot) return

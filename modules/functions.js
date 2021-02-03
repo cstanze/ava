@@ -43,9 +43,9 @@ module.exports = client => {
   // getSettings merge the client defaults with the new guild settings.
   // guild settings in enmap should only have *unique* overrides that are different from the defaults.
   client.getSettings = async (guild) => {
-    const defaults = (await client.database.selectFrom('guild', `WHERE guildid = 'default'`)).rows[0]
-    if(!guild || (typeof (await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)).rows[0]) == 'undefined') return defaults
-    const guildSettings = (await client.database.selectFrom('guild', `WHERE guildid = '${guild.id}'`)).rows[0]
+    const defaults = (await client.database.selectFrom('guilds', `WHERE guildid = 0`)).rows[0]
+    if(!guild || (typeof (await client.database.selectFrom('guilds', `WHERE guildid = ${guild.id}`)).rows[0]) == 'undefined') return defaults
+    const guildSettings = (await client.database.selectFrom('guilds', `WHERE guildid = ${guild.id}`)).rows[0]
     return guildSettings
   }
   /*
@@ -144,6 +144,12 @@ module.exports = client => {
     (await client.guilds.fetch('646889834845175809')).channels.cache.get('761823906184167454').send(generateEmbedForType(type, options))
   }
 
+  client.requestedReload = (s, tag, id) => {
+    console.log(chalk.blue(`[Ava]`), chalk.green(`[Shard ${s}]`), 
+    `Requested exit on current shard by user: ${tag} (${id})`)
+    process.exit(0)
+  }
+
 }
 
 generateEmbedForType = (type, opts) => {
@@ -172,5 +178,13 @@ generateEmbedForType = (type, opts) => {
         .setTitle('Guild Leave')
         .setDescription(`Left Guild: ${opts.guildName}`)
         .addField(`Guild ID`, opts.guildId, true)
+    case 'reload':
+      return new Discord.MessageEmbed()
+        .setColor(`RED`)
+        .setTitle(`Reload Request`)
+        .setDescription(`Reload request on shard \`${opts.shard}\``)
+        .addField(`User`, `${opts.userTag} (${opts.userId})`)
+        .addField(`Shard ID`, `${opts.shard}`, true)
+        .addField(`Completed?`, `${opts.complete.toString().charAt(0).toUpperCase()}${opts.complete.toString().substring(1, opts.complete.toString().length)}`)
   }
 }
