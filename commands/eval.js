@@ -33,7 +33,7 @@ module.exports = {
     try {
       switch(lang.command.type) {
       case 'eval':
-        result = inspect(eval(argss), { depth: 1, })
+        result = inspect(eval(argss), { depth: 1 })
         break
       case 'exec':
         msg.channel.send(':warning: **This may take some time**')

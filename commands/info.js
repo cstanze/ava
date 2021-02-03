@@ -13,7 +13,8 @@ module.exports = {
     const guildCount = (await client.shard.fetchClientValues('guilds.cache.size')).reduce((prev, val) => prev + val, 0)
     const memberCount = (await client.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')).reduce((prev, val) => prev + val, 0)
     const channelCount = (await client.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.channels.cache.size, 0)')).reduce((prev, val) => prev + val, 0)
-    const commandExecCount = await client.database.selectFrom('ncollect', `where numdesc = 'mesages.commands.exec.count'`).rows[0].num
+    const commandExecCount = (await client.database.selectFrom('ncollect', `where numdesc = 'messages.commands.exec.count'`)).rows[0].num
+    const messageReadCount = (await client.database.selectFrom('ncollect', `where numdesc = 'messages.count'`)).rows[0].num
     const info = new Discord.MessageEmbed()
 			.setColor('#339D33')
 			.setTitle('Server Info')
@@ -29,7 +30,8 @@ module.exports = {
         { name: 'Discord.js', value: Discord.version, inline: true },
         { name: 'Node', value: `${process.version}`, inline: true },
         { name: 'OS', value: `${os.type()}`, inline: true },
-        { name: 'Executed Commands', value: commandExecCount, inline: true }
+        { name: 'Executed Commands', value: commandExecCount, inline: true },
+        { name: 'Messages Read', value: messageReadCount, inline: true }
 			)
 			.setFooter(client.randomFooters[Math.floor(Math.random() * client.randomFooters.length)])
       .setTimestamp()

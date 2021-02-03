@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { ShardingManager } = require('discord.js')
 const config = require('./config.json')
 const chalk = require('chalk')
@@ -7,7 +8,13 @@ const manager = new ShardingManager('./app.js', {
   respawn: true,
   mode: "process"
 })
-const exec = require('child_process').execSync
+const exec = require('child_process').exec
+
+// NOTE: Do manually lol
+// exec('rethinkdb', {}, (err, stdout, stderr) => {
+//   if(err) process.exit()
+//   exec('./imgen/start.sh')
+// })
 
 // These handlers are safe here
 manager.on('shardCreate', shard => {

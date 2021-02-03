@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { didYouMeanCustom } = require('../util/didyoumean.js')
 const chalk = require('chalk')
+const { inspect } = require('util')
 
 module.exports = {
   name: 'reload_command',

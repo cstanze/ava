@@ -28,7 +28,7 @@ const Discord = require('discord.js')
 //const fetch = require('node-fetch')
 const config = require('./config')
 //let randomGivers = ["Here you go!", "Here it is!", "I found it!", "Searching...Found it!", "Looking..."]
-const client = new Discord.Client({ 
+const client = new Discord.Client({
 	partials: ['MESSAGE', 'REACTION'],
 	disableMentions: 'everyone',
 	ws: {
@@ -53,7 +53,7 @@ const pg = require('pg')
 pg.types.setTypeParser(20, String) // bigint (pg) -> String (js)
 const dbClient = new pg.Client({
 	user: 'avapg',
-	host: 'localhost',
+	host: '10.0.1.10',
 	database: 'ava',
 	password: '5a9cf696b5da5bbc4f3630c174a4053297c895f24ec4b2032a51105b8c6a0c8a',
 	port: 5432,
@@ -153,10 +153,10 @@ client.on('message', async msg => {
 
 	// Data Collection Queries
 	await client.database.updateRow('ncollect', ['num = num + 1'], [`numdesc = 'messages.count'`])
-	
+
 	// Blacklist
 	const blacklistedUser = (await client.database.selectFrom('blacklist', `where affected = ${msg.author.id}`)).rows
-	if(blacklistedUser.length) return 
+	if(blacklistedUser.length) return
 
 	if(msg.content.includes(client.token)) return msg.delete()
 

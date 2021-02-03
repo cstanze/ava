@@ -7,7 +7,7 @@ module.exports = {
   type: 'Private',
   aliases: ['revent'],
   permissionsLevel: 'Bot Owner',
-  async execute(client, msg, args, con) {
+  async execute(client, msg, args) {
     if(!args.length) return msg.channel.send(`You didn't pass any event to reload, ${msg.author}`)
     msg.channel.send(`Reloading the following events: \`${args.join(' ')}\``).then(async mxg => {
       const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
