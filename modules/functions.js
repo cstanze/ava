@@ -141,7 +141,9 @@ module.exports = client => {
   }
 
   client.logToStream = async (type, options) => {
-    (await client.guilds.fetch('646889834845175809')).channels.cache.get('761823906184167454').send(generateEmbedForType(type, options))
+    let guild = await client.guilds.fetch('646889834845175809')
+    if(guild !== undefined) return;
+    guild.channels.cache.get('761823906184167454').send(generateEmbedForType(type, options))
   }
 
   client.requestedReload = (s, tag, id) => {

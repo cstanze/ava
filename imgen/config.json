@@ -1,8 +1,0 @@
-{
-  "client_id": "id",
-  "client_secret": "secret?",
-  "admins": ["add", "nothing", "here", "lol"],
-  "rdb_address": "localhost",
-  "rdb_port": 28015,
-  "rdb_db": "avaimgen"
-}

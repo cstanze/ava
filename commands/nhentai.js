@@ -7,24 +7,32 @@ module.exports = {
   type: 'Search',
   nsfw: true,
   usage: '<doujin number>',
-  example: '177013',
+  example: '91988',
   args: true,
-  async execute(client, msg, args) {
-    const number = args[0]
-    if (!nhentai.exists(number)) return msg.channel.send(':warning: no hentai found...');
+  async execute(client, msg, [number]) {
+    if (!nhentai.exists(number)) return msg.channel.send(':warning: no doujin found...');
     const doujin = await nhentai.getDoujin(number)
     const embed = new Discord.MessageEmbed()
       .setTitle(doujin.title)
       .setURL(doujin.link)
+      .setAuthor(msg.author.tag, msg.author.avatarURL({ format: 'png', dynamic: true }))
       .setThumbnail(doujin.thumbnails[0])
       .addField(
-        'Artist',
-        doujin.details.artists.map((artist) => artist.split('(')[0].trim()).join(', '),
+        'Artist(s)',
+        doujin.details.artists 
+        ? doujin.details.artists.map((artist) => artist.split('(')[0].trim()).join(', ')
+        : 'unknown',
+        true
       )
+      .addField('Languages', doujin.details.languages.join(', '), true)
+      .addField('Pages', doujin.details.pages[0], true)
+      .addField('Uploaded', doujin.details.uploaded[0], true)
+      .addField('Alternate Title', doujin.nativeTitle)
+      .addField('Categories', doujin.details.categories.join(', '), true)
       .addField('Tags', doujin.details.tags.map((tags) => tags.split('(')[0].trim()).join(', '))
       .setFooter(
-        `Requested by: ${msg.author.tag} | Provided By: nhentai.net`,
-        msg.author.avatarURL({ format: 'png', dynamic: true }),
+        `Provided By: nhentai.net`,
+        `https://i.imgur.com/uLAimaY.png`,
       )
       .setTimestamp()
     return msg.channel.send(embed)

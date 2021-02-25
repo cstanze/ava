@@ -16,7 +16,7 @@ module.exports = {
         for(const [ws_status, id, size, usize, gping] of idSizeArray) {
           let tableRow = `${' '.repeat((5-id.toString().length) - (id == client.shard.ids[0] ? 1 : 0))}${client.shard.ids[0] == id ? '>' : ''}${id}|`
           tableRow += `${size}${' '.repeat(7-size.toString().length)}|`
-          tableRow += `${usize}${' '.repeat(8-usize.toString().length)}|`
+          tableRow += `${usize || 'NULL'}${' '.repeat(8-(usize || '0000').toString().length)}|`
           tableRow += `READY${' '.repeat(1)}|` // TODO: Finish this...
           tableRow += `${gping/size}ms`
           tableBody += `${tableRow}\n`

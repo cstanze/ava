@@ -1,3 +1,0 @@
-hiredis
-pillow-simd
-ujson
